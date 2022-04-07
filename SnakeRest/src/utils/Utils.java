@@ -11,6 +11,7 @@ public class Utils {
 	public static final String SEPARADOR=";";
 	public static final int ANCHO = 20;
 	public static final int ALTO = 15;
+	public static final String CASILLA_VACIA="·";
 
 	/*
 	 * Usar junto a: if (output == null || output.contains("error")) {
