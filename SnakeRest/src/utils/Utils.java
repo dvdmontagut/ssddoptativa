@@ -12,6 +12,8 @@ public class Utils {
 	public static final int ANCHO = 20;
 	public static final int ALTO = 15;
 	public static final String CASILLA_VACIA="·";
+	public static final String GET = "GET";
+	public static final String POST = "POST";
 
 	/*
 	 * Usar junto a: if (output == null || output.contains("error")) {
@@ -62,6 +64,25 @@ public class Utils {
 			Thread.sleep((long)(dormir*100));} catch (Exception e) {e.printStackTrace();
 		}
 	}//End of dormir
+	
+	public static String FactoryTablero(String tablero) {
+		int linea = 0;
+		if(tablero.contains("error"))
+		return "error";
+		
+		String[] tokens = tablero.split(Utils.SEPARADOR);
+		StringBuilder sb = new StringBuilder();
+		for(String s : tokens) {
+			sb.append(s);
+			if(++linea == Utils.ANCHO) {
+				sb.append("\n");
+				linea = 0;
+			}
+		}
+		return sb.toString();
+			
+		
+	}
 
 	
 }//End of class

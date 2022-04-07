@@ -20,7 +20,7 @@ public class ServerSnake {
 		private Semaphore dejarVisualizar;
 		private Semaphore seccionCriticaEsperaJugador;
 		private String salaActiva;
-		private String[] palabras= {"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Chamoso" };
+		private String[] palabras= {"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Chamoso", "Montadito" };
 		
 		/**
 		 * Este metodo sirver para comprobar que existe el servidor
@@ -142,22 +142,22 @@ public class ServerSnake {
 			posicionesCerca.add(dummy); //ABAJO DER	
 			
 			dummy = new Integer[2];
-			dummy[0] = fila-2;
+			dummy[0] = (fila-2<0)?fila:fila-2;
 			dummy[1]=columna;
 			posicionesCerca.add(dummy); //ARRIBA +2
 			
 			dummy = new Integer[2];
 			dummy[0] = fila;
-			dummy[1]=columna-2;
+			dummy[1]=(columna-2<0)?columna:columna-2;
 			posicionesCerca.add(dummy); //IZQ +2
 			
 			dummy = new Integer[2];
 			dummy[0] = fila;
-			dummy[1]=columna+2;
+			dummy[1]=(columna+2>Utils.ANCHO-1)?columna:columna+2;
 			posicionesCerca.add(dummy); //DER +2
 			
 			dummy = new Integer[2];
-			dummy[0] = fila+2;
+			dummy[0]=(fila+2>Utils.ALTO-1)?fila:fila+2;
 			dummy[1]=columna;
 			posicionesCerca.add(dummy); //ABAJO +2
 			
@@ -186,6 +186,27 @@ public class ServerSnake {
 			return fila;
 		}
 
+		
+		/**
+		 * Este meotodo muestra el tablero
+		 * @param sala
+		 * @return
+		 */
+		@GET
+		@Produces(MediaType.TEXT_PLAIN) 
+		@Path("verTablero")
+		public String verTablero(@QueryParam(value = "sala") String room) {
+			
+			StringBuilder sb = new StringBuilder();
+			if(!room.equals(this.salaActiva))
+				return "errorSala";
+			
+			for(String[] f: tablero)
+				for(String c:f)
+					sb.append(c).append(Utils.SEPARADOR);
+			return sb.toString();
+			
+		}
 		/**
 		 * 
 		 */
