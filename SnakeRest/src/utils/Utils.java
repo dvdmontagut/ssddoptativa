@@ -8,17 +8,30 @@ import java.util.concurrent.Semaphore;
 
 public class Utils {
 
-	public static final String SEPARADOR=";";
+	public static final String SEPARADOR1=",";
+	public static final String SEPARADOR2=";";
 	public static final int ANCHO = 20;
 	public static final int ALTO = 15;
 	public static final String CASILLA_VACIA="·";
+	public static final String CASILLA_COMIDA="*";
 	public static final String GET = "GET";
 	public static final String POST = "POST";
-
+	
+	public static final String[] PALABRAS = {
+					"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Montadito", "Nano",
+					"Vacia", "Konami", "Houston", "Remate", "Tablero", "Jugar", "Tiempo", "Distribuido", "PLAN",
+					"Alejo", "Oficial", "Rey", "Reina", "Casilla", "Comida", "Video", "Agua", "Fuego", "Rayo",
+					"Viento", "Parto", "Trueno", "Cloaca", "Borrador", "Nuevo", "Guardado", "Automata", "Redes",
+					"Sonido", "Despertar", "Tarde", "Noche", "Abecedario", "Alfabeto"
+					};
+		
+	
 	/*
-	 * Usar junto a: if (output == null || output.contains("error")) {
-	 * System.out.println(output == null ? "Error" : output); return false; } // End
-	 * of if
+	 * Usar junto a: 
+	 * if (output == null || output.contains("error")) {
+	 * 		System.out.println(output == null ? "Error" : output);
+	 * 		return false; 
+	 * }// End of if
 	 */
 	public static String peticion(String link, String method) {
 				
@@ -61,28 +74,28 @@ public class Utils {
 
 	public static void dormir(int dormir) {
 		try {
-			Thread.sleep((long)(dormir*100));} catch (Exception e) {e.printStackTrace();
+			Thread.sleep((long)(dormir*100));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}//End of dormir
 	
-	public static String FactoryTablero(String tablero) {
-		int linea = 0;
-		if(tablero.contains("error"))
-		return "error";
+	public static String factoryTablero(String output) {
+		if (output == null || output.contains("error")) {
+			System.out.println(output == null ? "Error" : output);
+			return "error";
+		}// End of if
 		
-		String[] tokens = tablero.split(Utils.SEPARADOR);
+		String[] tokens = output.split(Utils.SEPARADOR2);
 		StringBuilder sb = new StringBuilder();
 		for(String s : tokens) {
-			sb.append(s);
-			if(++linea == Utils.ANCHO) {
-				sb.append("\n");
-				linea = 0;
-			}
-		}
+			String[] tokens2 = s.split(Utils.SEPARADOR1);
+			for(String ss: tokens2)	sb.append(ss);
+			sb.append("\n");
+		}//end of for
 		return sb.toString();
-			
-		
-	}
+	}//end of factoryTablero
 
+	
 	
 }//End of class
