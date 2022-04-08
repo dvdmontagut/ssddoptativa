@@ -5,10 +5,12 @@ import utils.*;
 
 public class Serpiente implements Cloneable 
 {
-	private Queue<Integer[]> posiciones;
+	private LinkedList<Integer[]> posiciones;
 	private Direccion direccion;
 	private boolean deboCrecer;
 	private boolean viva;
+	
+	
 	
 	public Serpiente clone() {
 		try {
@@ -18,12 +20,12 @@ public class Serpiente implements Cloneable
 		}
 	}
 	
-	public <Integer[]> posiciones(){
+	public Queue<Integer[]> getPosiciones(){
 		return posiciones;
 	}
 	
 	public Integer[] cabeza() {
-		return this.posiciones.peek();
+		return this.posiciones.peekLasF();
 	}
 	
 	public Serpiente(int y, int x, Direccion d) {
@@ -36,19 +38,19 @@ public class Serpiente implements Cloneable
 			dummy = new Integer[2];
 			dummy[Utils.EJE_Y] = y+1;
 			dummy[Utils.EJE_X] = x;
-			posiciones.add(dummy);
+			posiciones.addFirst(dummy);
 		}else {
 			dummy = new Integer[2];
 			dummy[Utils.EJE_Y] = y-1;
 			dummy[Utils.EJE_X] = x;
-			posiciones.add(dummy);
+			posiciones.addFirst(dummy);
 		}
 		
 		//CABEZA
 		dummy = new Integer[2];
 		dummy[Utils.EJE_Y] = y;
 		dummy[Utils.EJE_X] = x;
-		posiciones.add(dummy);
+		posiciones.addFirst(dummy);
 		
 		this.direccion = d;
 		this.viva = true;
@@ -73,13 +75,31 @@ public class Serpiente implements Cloneable
 			case DERECHA: nuevaCabeza[Utils.EJE_X]++; break;
 			case IZQUIERDA: nuevaCabeza[Utils.EJE_X]--; break;	
 		}
-		posiciones.add(nuevaCabeza);
+		posiciones.addFirst(nuevaCabeza);
 		if(this.deboCrecer)
 		{
-			posiciones.remove();
+			posiciones.removeLast();
 			this.deboCrecer=false;
 		}
 		return true;
 	}
+
+	public boolean isDeboCrecer() {
+		return deboCrecer;
+	}
+
+	public void setDeboCrecer(boolean deboCrecer) {
+		this.deboCrecer = deboCrecer;
+	}
+
+	public boolean isViva() {
+		return viva;
+	}
+
+	public void setViva(boolean viva) {
+		this.viva = viva;
+	}
+	
+	
 	
 }

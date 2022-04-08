@@ -16,6 +16,8 @@ public class Utils {
 	public static final String CASILLA_COMIDA="*";
 	public static final String GET = "GET";
 	public static final String POST = "POST";
+	public static final String CABEZA = "h";
+	public static final String CUERPO = "b";
 	public static final int EJE_Y = 0;
 	public static final int EJE_X = 1;
 	

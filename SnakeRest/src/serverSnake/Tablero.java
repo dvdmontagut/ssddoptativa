@@ -65,12 +65,9 @@ public class Tablero
 				casillas[fila-1][columna] = nombres.get(i);		
 		}//end of for
 		//comida
-		while(true) {
-			fila = generarFila();
-			columna = generarColumna();
-			if(comprobarCabeza(fila, columna)) break;
-		}//end of while
-		casillas[fila][columna] = Utils.CASILLA_COMIDA;
+		comida = this.generarComida();
+		casillas[comida[Utils.EJE_Y]][Utils.EJE_X] = Utils.CASILLA_COMIDA;
+		
 		this.comida[Utils.EJE_Y] = fila;
 		this.comida[Utils.EJE_X] = columna;
 		//END OF SEUDO BACKTRACK TAMBIEN LLAMADO ENSAYO-ERROR		
@@ -167,6 +164,7 @@ public class Tablero
 
 	public void turnoFicticio() {
 		
+		boolean flagGenerarComida = true;
 		//COPIAR LAS SERPIENTES REALES
 		for(Serpiente s : this.serpientes) 
 			this.serpientesFicticias.add(s.clone());
@@ -175,16 +173,48 @@ public class Tablero
 		for(Serpiente s: this.serpientesFicticias)
 			s.avanzar();
 		
+		//COMPROBAR COLISIONES
+		this.comprobarColisiones();
 		
 		
 		//COMPROBAR COMIDA
 		for(Serpiente s:this.serpientesFicticias)
-			if(s.cabeza().equals(comida)) {
+			if(s.cabeza().equals(comida) && s.isViva()) {
 				s.comer();
-				comida = this.generarComida();
+				flagGenerarComida = true;
+				//comida = this.generarComida();
 			}
 		
 		
 		
+	}
+
+	private void comprobarColisiones() {
+		
+		
+		
+		Map<Integer[],String> ocupadas = new HashMap<>();
+		for(Serpiente s: this.serpientesFicticias) {
+			ocupadas.putIfAbsent(s.getPosiciones()., Utils.CABEZA);
+			for(Integer[] i : s.getPosiciones()) {
+				
+			}	
+		}
+	}
+
+	private Integer[] generarComida() {
+		List<Integer[]> casillasVacias = new ArrayList<>();
+		for(int i=0;i<Utils.ALTO;i++)
+			for(int j=0; j<Utils.ANCHO;j++)
+				if(casillas[i][j]!=Utils.CASILLA_VACIA) {
+					Integer[] dummy = new Integer[2];
+					dummy[Utils.EJE_Y]=i;
+					dummy[Utils.EJE_X]=j;
+					casillasVacias.add(dummy);
+				}
+		Random r = new Random();
+		Integer[] posComida = casillasVacias.get(r.nextInt(casillasVacias.size()));
+		casillas[posComida[Utils.EJE_Y]][posComida[Utils.EJE_X]]=Utils.CASILLA_COMIDA;
+		return posComida;
 	}
 }
