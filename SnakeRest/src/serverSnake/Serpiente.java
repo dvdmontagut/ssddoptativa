@@ -25,7 +25,7 @@ public class Serpiente implements Cloneable
 	}
 	
 	public Integer[] cabeza() {
-		return this.posiciones.peekLasF();
+		return this.posiciones.peekFirst();
 	}
 	
 	public Serpiente(int y, int x, Direccion d) {
