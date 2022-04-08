@@ -195,7 +195,7 @@ public class Tablero
 		
 		Map<Integer[],String> ocupadas = new HashMap<>();
 		for(Serpiente s: this.serpientesFicticias) {
-			ocupadas.putIfAbsent(s.getPosiciones()., Utils.CABEZA);
+			ocupadas.putIfAbsent(s.getPosiciones().peekFirst(), Utils.CABEZA);
 			for(Integer[] i : s.getPosiciones()) {
 				
 			}	
