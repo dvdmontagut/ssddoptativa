@@ -1,5 +1,8 @@
 package playerSnake;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import utils.*;
 
 public class PlayerSnake {
@@ -24,6 +27,10 @@ public class PlayerSnake {
 		
 		link = "http://localhost:8080/SnakeRest/SnakeMRV/game/verTablero?sala="+sala;
 		System.out.println(Utils.factoryTablero(Utils.peticion(link, Utils.GET)));
+		
+		
+		
+		
 		
 	}
 	

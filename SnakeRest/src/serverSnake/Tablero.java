@@ -7,10 +7,15 @@ import utils.*;
 public class Tablero 
 {
 	private String[][] casillas;
-	
+	private List<Serpiente> serpientes;
+	private List<Serpiente> serpientesFicticias;
+	private Integer[] comida;
 	public Tablero()
 	{
+		comida = new Integer[2];
 		casillas = new String[Utils.ALTO][Utils.ANCHO];
+		serpientes = new ArrayList<>();
+		serpientesFicticias = new ArrayList<>();
 	}
 	
 	@Override
@@ -34,10 +39,16 @@ public class Tablero
 		int columna = this.generarColumna();
 		
 		casillas[fila][columna] = nombres.get(0).toUpperCase();
-		if(fila>Utils.ALTO/2) 	
+		if(fila>Utils.ALTO/2){	
 			casillas[fila+1][columna] = nombres.get(0);
-		else 
+			serpientes.add(new Serpiente(fila,columna,Direccion.ARRIBA));
+		}
+		else {
 			casillas[fila-1][columna] = nombres.get(0);
+			serpientes.add(new Serpiente(fila,columna,Direccion.ABAJO));
+		}
+		
+		
 		
 		//SEUDO BACKTRACK TAMBIEN LLAMADO ENSAYO-ERROR
 		//jugadores
@@ -60,6 +71,8 @@ public class Tablero
 			if(comprobarCabeza(fila, columna)) break;
 		}//end of while
 		casillas[fila][columna] = Utils.CASILLA_COMIDA;
+		this.comida[Utils.EJE_Y] = fila;
+		this.comida[Utils.EJE_X] = columna;
 		//END OF SEUDO BACKTRACK TAMBIEN LLAMADO ENSAYO-ERROR		
 	}
 	
@@ -151,4 +164,27 @@ public class Tablero
 		
 		return true;
 	}//end of comprobarCabeza
+
+	public void turnoFicticio() {
+		
+		//COPIAR LAS SERPIENTES REALES
+		for(Serpiente s : this.serpientes) 
+			this.serpientesFicticias.add(s.clone());
+		
+		//AVANZAMOS LAS SERPIENTES FICTICIAS
+		for(Serpiente s: this.serpientesFicticias)
+			s.avanzar();
+		
+		
+		
+		//COMPROBAR COMIDA
+		for(Serpiente s:this.serpientesFicticias)
+			if(s.cabeza().equals(comida)) {
+				s.comer();
+				comida = this.generarComida();
+			}
+		
+		
+		
+	}
 }

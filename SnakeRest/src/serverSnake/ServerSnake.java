@@ -107,7 +107,13 @@ public class ServerSnake {
 		private boolean partida() {
 			
 			while(this.partidaEnCurso) {
-				;
+				//DAR UNOS SEGUNDOS PARA RECIBIR ORDENES
+				tablero.turnoFicticio();
+				/*	tablero.comprobarColisionesBorde();
+					tablero.comprobarColisionesSerpiente();
+					tablero.matar();
+				tablero.turnoReal();
+					tablero.generarComida();*/
 			}
 			return true;
 		}
