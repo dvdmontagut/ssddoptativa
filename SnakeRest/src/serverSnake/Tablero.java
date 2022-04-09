@@ -41,11 +41,11 @@ public class Tablero
 		casillas[fila][columna] = nombres.get(0).toUpperCase();
 		if(fila>Utils.ALTO/2){	
 			casillas[fila+1][columna] = nombres.get(0);
-			serpientes.add(new Serpiente(fila,columna,Direccion.ARRIBA));
+			serpientes.add(new Serpiente(nombres.get(0), fila,columna,Direccion.ARRIBA));
 		}
 		else {
 			casillas[fila-1][columna] = nombres.get(0);
-			serpientes.add(new Serpiente(fila,columna,Direccion.ABAJO));
+			serpientes.add(new Serpiente(nombres.get(0), fila,columna,Direccion.ABAJO));
 		}
 		
 		
@@ -59,10 +59,15 @@ public class Tablero
 				if(comprobarCabeza(fila, columna)) break;
 			}//end of while
 			casillas[fila][columna] = nombres.get(i).toUpperCase();
-			if(fila>Utils.ALTO/2)
+			if(fila>Utils.ALTO/2) {
 				casillas[fila+1][columna] = nombres.get(i);
-			else 
-				casillas[fila-1][columna] = nombres.get(i);		
+				serpientes.add(new Serpiente(nombres.get(i), fila,columna,Direccion.ARRIBA));
+			}//End of if
+				
+			else {
+				casillas[fila-1][columna] = nombres.get(i);	
+				serpientes.add(new Serpiente(nombres.get(i), fila,columna,Direccion.ABAJO));
+			}//End of ELSE
 		}//end of for
 		//comida
 		comida = this.generarComida();
@@ -162,7 +167,7 @@ public class Tablero
 		return true;
 	}//end of comprobarCabeza
 
-	public void turnoFicticio() {
+	public void turno() {
 		
 		boolean flagGenerarComida = true;
 		//COPIAR LAS SERPIENTES REALES
@@ -183,24 +188,71 @@ public class Tablero
 				s.comer();
 				flagGenerarComida = true;
 				//comida = this.generarComida();
-			}
+			}//End of if
+		//Rescato
+		for(Serpiente s: this.serpientesFicticias)
+			if(s.isViva())
+				this.serpientes.add(s.clone());
+		//Generar la manzana
+		if(flagGenerarComida)
+			this.comida=this.generarComida();
+		//Dibujo
+				this.dibujar();	
 		
-		
-		
-	}
+	}//End of turnoFicticio
+
+	private void dibujar() {
+		//Todo a vacio
+		for(int f=0;f<Utils.ALTO;f++) 
+			for(int c=0;c<Utils.ANCHO;c++)
+				casillas[f][c] = Utils.CASILLA_VACIA;
+		//Se rellena con cosas
+		for(Serpiente s:this.serpientes) {
+			for(Integer[] i: s.getPosiciones()) {
+				casillas[i[Utils.EJE_Y]][i[Utils.EJE_X]] = s.getNombre().toLowerCase();
+			}//End of for
+			casillas[s.cabeza()[Utils.EJE_Y]][s.cabeza()[Utils.EJE_X]] = s.getNombre().toUpperCase();
+		}//End of for
+		casillas[comida[Utils.EJE_Y]][comida[Utils.EJE_X]] = Utils.CASILLA_COMIDA;
+	}//End of dibujar
 
 	private void comprobarColisiones() {
 		
 		
-		
-		Map<Integer[],String> ocupadas = new HashMap<>();
+		boolean cabeza = true;
+		Map<Integer[],String> cuerpos = new HashMap<>();
+		Map<Integer[],Serpiente> serpientes = new HashMap<>();
+		//Cojo todos los cuerpos
 		for(Serpiente s: this.serpientesFicticias) {
-			ocupadas.putIfAbsent(s.getPosiciones().peekFirst(), Utils.CABEZA);
 			for(Integer[] i : s.getPosiciones()) {
-				
-			}	
-		}
-	}
+				if(cabeza) 
+					cabeza = false;
+				else {
+					cuerpos.putIfAbsent(i, Utils.CUERPO);
+				}
+			}//End of for
+			cabeza = true;
+		}//End of for
+		//Me preocupo por si alguna cabeza colisiona con algun cuerpo
+		for(Serpiente s: this.serpientesFicticias) {
+			if(cuerpos.putIfAbsent(s.cabeza(), Utils.CABEZA)!=null){
+				s.matar();
+			}//End of if
+		}//End of for
+		//Choques de cabezas y salidas de mapa
+		for(Serpiente s: this.serpientesFicticias) {
+			if(serpientes.putIfAbsent(s.cabeza(), s)!=null){
+				s.matar();
+				serpientes.get(s.cabeza()).matar();
+			}//End of if
+			
+			if(s.cabeza()[Utils.EJE_X]>Utils.ANCHO-1||s.cabeza()[Utils.EJE_X]<0)
+				s.matar();
+			if(s.cabeza()[Utils.EJE_Y]>Utils.ALTO-1||s.cabeza()[Utils.EJE_Y]<0)
+				s.matar();
+		}//End of for
+		
+	}// ENd of comprobarColisiones
 
 	private Integer[] generarComida() {
 		List<Integer[]> casillasVacias = new ArrayList<>();
@@ -214,7 +266,6 @@ public class Tablero
 				}
 		Random r = new Random();
 		Integer[] posComida = casillasVacias.get(r.nextInt(casillasVacias.size()));
-		casillas[posComida[Utils.EJE_Y]][posComida[Utils.EJE_X]]=Utils.CASILLA_COMIDA;
 		return posComida;
 	}
 }

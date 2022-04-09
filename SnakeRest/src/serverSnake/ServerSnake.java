@@ -93,11 +93,12 @@ public class ServerSnake {
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("verTablero")
 		public String verTablero(@QueryParam(value = "sala") String room) {
-
-			if(!room.equals(this.salaActiva))
+			 partida();
+			/*if(!room.equals(this.salaActiva))
 				return "ERROR. LA SALA NO ES CORRECTA";
 			
-			return tablero.toString();
+			return tablero.toString();*/
+			 return"hola^^";
 			
 		}//end of verTablero
 		
@@ -108,7 +109,8 @@ public class ServerSnake {
 			
 			while(this.partidaEnCurso) {
 				//DAR UNOS SEGUNDOS PARA RECIBIR ORDENES
-				tablero.turnoFicticio();
+				tablero.turno();
+				System.out.println(tablero.toString());
 				/*	tablero.comprobarColisionesBorde();
 					tablero.comprobarColisionesSerpiente();
 					tablero.matar();

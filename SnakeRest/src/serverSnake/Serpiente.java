@@ -5,6 +5,8 @@ import utils.*;
 
 public class Serpiente implements Cloneable 
 {
+	
+	private String nombre;
 	private LinkedList<Integer[]> posiciones;
 	private Direccion direccion;
 	private boolean deboCrecer;
@@ -20,7 +22,16 @@ public class Serpiente implements Cloneable
 		}
 	}
 	
-	public Queue<Integer[]> getPosiciones(){
+	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	public LinkedList<Integer[]> getPosiciones(){
 		return posiciones;
 	}
 	
@@ -28,9 +39,9 @@ public class Serpiente implements Cloneable
 		return this.posiciones.peekFirst();
 	}
 	
-	public Serpiente(int y, int x, Direccion d) {
+	public Serpiente(String nombre, int y, int x, Direccion d) {
 		Integer[] dummy; 
-		
+		this.nombre = nombre;
 		posiciones = new LinkedList<>();
 		
 		//CUERPO
@@ -96,9 +107,9 @@ public class Serpiente implements Cloneable
 		return viva;
 	}
 
-	public void setViva(boolean viva) {
-		this.viva = viva;
-	}
+	public void matar() {
+		this.viva = false;
+	}//End of matar
 	
 	
 	
