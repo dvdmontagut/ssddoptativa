@@ -108,7 +108,7 @@ public class ServerSnake {
 		 */
 		private boolean partida() {
 			
-			while(this.partidaEnCurso) {
+			while(!tablero.partidaAcabada()) {
 				//DAR UNOS SEGUNDOS PARA RECIBIR ORDENES
 				tablero.turno();
 				System.out.println(Utils.factoryTablero(tablero.toString()));
@@ -120,6 +120,7 @@ public class ServerSnake {
 				tablero.turnoReal();
 					tablero.generarComida();*/
 			}
+			this.partidaEnCurso = false;
 			return true;
 		}
 }//end of class

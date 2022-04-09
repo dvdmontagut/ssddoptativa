@@ -10,6 +10,8 @@ public class Tablero
 	private List<Serpiente> serpientes;
 	private List<Serpiente> serpientesFicticias;
 	private Integer[] comida;
+	
+	
 	public Tablero()
 	{
 		comida = new Integer[2];
@@ -27,6 +29,10 @@ public class Tablero
 			sb.append(Utils.SEPARADOR2);
 		}//end of for
 		return sb.toString();
+	}
+	
+	public boolean partidaAcabada() {
+		return this.serpientes.size()==0;
 	}
 	
 	public void construir(int nj, List<String> nombres)
@@ -70,11 +76,12 @@ public class Tablero
 			}//End of ELSE
 		}//end of for
 		//comida
-		comida = this.generarComida();
-		casillas[comida[Utils.EJE_Y]][Utils.EJE_X] = Utils.CASILLA_COMIDA;
+		this.comida[Utils.EJE_Y] = 1;
+		this.comida[Utils.EJE_X] = 1;
 		
-		this.comida[Utils.EJE_Y] = fila;
-		this.comida[Utils.EJE_X] = columna;
+		dibujar();
+		comida = this.generarComida();
+		dibujar();
 		//END OF SEUDO BACKTRACK TAMBIEN LLAMADO ENSAYO-ERROR		
 	}
 	
@@ -169,7 +176,7 @@ public class Tablero
 
 	public void turno() {
 		
-		boolean flagGenerarComida = true;
+		boolean flagGenerarComida = false;
 		//COPIAR LAS SERPIENTES REALES
 		for(Serpiente s : this.serpientes) 
 			this.serpientesFicticias.add(s.clone());
@@ -184,7 +191,10 @@ public class Tablero
 		
 		//COMPROBAR COMIDA
 		for(Serpiente s:this.serpientesFicticias)
-			if(s.cabeza().equals(comida) && s.isViva()) {
+			if(s.isViva()&&
+					s.cabeza()[Utils.EJE_X].intValue()==this.comida[Utils.EJE_X].intValue() &&
+					s.cabeza()[Utils.EJE_Y].intValue()==this.comida[Utils.EJE_Y].intValue()) 
+			{
 				s.comer();
 				flagGenerarComida = true;
 				//comida = this.generarComida();
@@ -196,8 +206,10 @@ public class Tablero
 				this.serpientes.add(s.clone());
 		
 		//Generar la manzana
-		if(flagGenerarComida)
+		if(flagGenerarComida) {
+			flagGenerarComida = false;
 			this.comida=this.generarComida();
+		}
 		//Dibujo
 				this.dibujar();	
 		
@@ -260,7 +272,7 @@ public class Tablero
 		List<Integer[]> casillasVacias = new ArrayList<>();
 		for(int i=0;i<Utils.ALTO;i++)
 			for(int j=0; j<Utils.ANCHO;j++)
-				if(casillas[i][j]!=Utils.CASILLA_VACIA) {
+				if(casillas[i][j]==Utils.CASILLA_VACIA) {
 					Integer[] dummy = new Integer[2];
 					dummy[Utils.EJE_Y]=i;
 					dummy[Utils.EJE_X]=j;
