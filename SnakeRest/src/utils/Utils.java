@@ -62,6 +62,26 @@ public class Utils {
 		}
 	} // End of method
 	
+	public static String peticion_throws(String link, String method) throws Exception{
+	
+			URL url;
+			String output;
+			//System.out.println(LocalDateTime.now()+": "+link);
+			url = new URL(link);
+			StringBuilder sb = new StringBuilder();
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod(method);
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+			conn.disconnect();
+			return sb.toString();
+	} // End of method
+	
 	public static Boolean waitSem(Semaphore s, int n) {
 		try {
 			s.acquire(n);
