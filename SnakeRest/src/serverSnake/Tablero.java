@@ -190,9 +190,11 @@ public class Tablero
 				//comida = this.generarComida();
 			}//End of if
 		//Rescato
+		this.serpientes = new ArrayList<>();
 		for(Serpiente s: this.serpientesFicticias)
 			if(s.isViva())
 				this.serpientes.add(s.clone());
+		
 		//Generar la manzana
 		if(flagGenerarComida)
 			this.comida=this.generarComida();

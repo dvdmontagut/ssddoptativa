@@ -13,31 +13,14 @@ public class Serpiente implements Cloneable
 	private boolean viva;
 	
 	
-	
-	public Serpiente clone() {
-		try {
-			return (Serpiente) super.clone();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
+	private Serpiente(String nombre, LinkedList<Integer[]> posiciones, 
+			Direccion direccion, boolean deboCrecer, boolean viva) {
 		this.nombre = nombre;
-	}
-	
-	public LinkedList<Integer[]> getPosiciones(){
-		return posiciones;
-	}
-	
-	public Integer[] cabeza() {
-		return this.posiciones.peekFirst();
-	}
+		this.posiciones = posiciones;
+		this.direccion = direccion;
+		this.deboCrecer = deboCrecer;
+		this.viva = viva;
+	}//End of builder
 	
 	public Serpiente(String nombre, int y, int x, Direccion d) {
 		Integer[] dummy; 
@@ -68,6 +51,46 @@ public class Serpiente implements Cloneable
 		this.deboCrecer = false;
 		
 	}
+	
+	public Serpiente clone() {
+		
+		String nombre = this.nombre;
+		Direccion direccion = this.direccion;
+		boolean deboCrecer = this.deboCrecer;
+		boolean viva = this.viva;
+		LinkedList<Integer[]> posiciones = new LinkedList<>();
+		for(int i = 0; i< this.posiciones.size();i++) {
+			int componenteX = this.posiciones.get(i)[Utils.EJE_X].intValue();
+			int componenteY = this.posiciones.get(i)[Utils.EJE_Y].intValue();
+			Integer [] casilla = new Integer [2];
+			casilla[Utils.EJE_X] = new Integer(componenteX);
+			casilla[Utils.EJE_Y] = new Integer(componenteY);
+			posiciones.add(casilla);
+		}//End of for
+		
+		return new Serpiente(nombre, posiciones, direccion, deboCrecer, viva);	
+	}//End of clone
+	
+	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	public LinkedList<Integer[]> getPosiciones(){
+		return posiciones;
+	}
+	
+	public Integer[] cabeza() {
+		return this.posiciones.peekFirst();
+	}
+	
+	
+	
+	
 	
 	public void comer() {
 		this.deboCrecer=true;

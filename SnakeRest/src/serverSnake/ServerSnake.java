@@ -113,7 +113,7 @@ public class ServerSnake {
 				tablero.turno();
 				System.out.println(Utils.factoryTablero(tablero.toString()));
 				System.out.flush();
-				Utils.dormir(100);
+				Utils.dormir(10);
 				/*	tablero.comprobarColisionesBorde();
 					tablero.comprobarColisionesSerpiente();
 					tablero.matar();

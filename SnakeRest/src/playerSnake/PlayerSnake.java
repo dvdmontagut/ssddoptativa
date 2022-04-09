@@ -2,8 +2,16 @@ package playerSnake;
 
 import java.util.LinkedList;
 import java.util.Queue;
-
 import utils.*;
+
+
+
+
+
+
+//BORRAR
+import serverSnake.Serpiente;
+
 
 public class PlayerSnake {
 	
@@ -27,17 +35,6 @@ public class PlayerSnake {
 		
 		link = "http://localhost:8080/SnakeRest/SnakeMRV/game/verTablero?sala="+sala;
 		System.out.println(Utils.factoryTablero(Utils.peticion(link, Utils.GET)));
-		
-		
-		LinkedList<String> l =  new LinkedList<>();
-		l.add("hola");
-		l.add("adios");
-		l.add("pene");
-		System.out.println(l.peek());
-		System.out.println(l.peekFirst());
-		System.out.println(l.peekLast());
-		
-		
 		
 		
 	}
