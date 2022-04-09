@@ -79,21 +79,25 @@ public class Serpiente implements Cloneable
 	}
 	
 	public boolean avanzar() {
-		Integer[] nuevaCabeza = posiciones.peek();
+		Integer [] cabeza = posiciones.peekFirst();
+		Integer [] nuevaCabeza = new Integer[2];
+		nuevaCabeza[Utils.EJE_Y] = (int) cabeza[Utils.EJE_Y];
+		nuevaCabeza[Utils.EJE_X] = (int) cabeza[Utils.EJE_X];
+		
 		switch (direccion) {
 			case ARRIBA: nuevaCabeza[Utils.EJE_Y]--; break;
 			case ABAJO: nuevaCabeza[Utils.EJE_Y]++; break;
 			case DERECHA: nuevaCabeza[Utils.EJE_X]++; break;
 			case IZQUIERDA: nuevaCabeza[Utils.EJE_X]--; break;	
-		}
+		}//End of switch
 		posiciones.addFirst(nuevaCabeza);
 		if(this.deboCrecer)
-		{
-			posiciones.removeLast();
 			this.deboCrecer=false;
-		}
+		else
+			posiciones.removeLast();
 		return true;
-	}
+	}//End of avanzar
+	
 
 	public boolean isDeboCrecer() {
 		return deboCrecer;

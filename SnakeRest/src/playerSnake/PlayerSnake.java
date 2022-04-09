@@ -9,7 +9,7 @@ public class PlayerSnake {
 	
 	public static void main(String[] args) {
 		
-		/*String link = "http://localhost:8080/SnakeRest/SnakeMRV/game/inicioDelServidor";
+		String link = "http://localhost:8080/SnakeRest/SnakeMRV/game/inicioDelServidor";
 		System.out.println(Utils.peticion(link, Utils.GET));
 		
 		link = "http://localhost:8080/SnakeRest/SnakeMRV/game/crearSala?nJugadores=3";
@@ -28,7 +28,7 @@ public class PlayerSnake {
 		link = "http://localhost:8080/SnakeRest/SnakeMRV/game/verTablero?sala="+sala;
 		System.out.println(Utils.factoryTablero(Utils.peticion(link, Utils.GET)));
 		
-		*/
+		
 		LinkedList<String> l =  new LinkedList<>();
 		l.add("hola");
 		l.add("adios");
