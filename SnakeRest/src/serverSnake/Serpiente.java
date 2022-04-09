@@ -7,13 +7,13 @@ public class Serpiente implements Cloneable
 {
 	
 	private String nombre;
-	private LinkedList<Integer[]> posiciones;
+	private LinkedList<Casilla> posiciones;
 	private Direccion direccion;
 	private boolean deboCrecer;
 	private boolean viva;
 	
 	
-	private Serpiente(String nombre, LinkedList<Integer[]> posiciones, 
+	private Serpiente(String nombre, LinkedList<Casilla> posiciones, 
 			Direccion direccion, boolean deboCrecer, boolean viva) {
 		this.nombre = nombre;
 		this.posiciones = posiciones;
@@ -23,34 +23,24 @@ public class Serpiente implements Cloneable
 	}//End of builder
 	
 	public Serpiente(String nombre, int y, int x, Direccion d) {
-		Integer[] dummy; 
+		
 		this.nombre = nombre;
 		posiciones = new LinkedList<>();
 		
 		//CUERPO
-		if(d == Direccion.ARRIBA) {
-			dummy = new Integer[2];
-			dummy[Utils.EJE_Y] = y+1;
-			dummy[Utils.EJE_X] = x;
-			posiciones.addFirst(dummy);
-		}else {
-			dummy = new Integer[2];
-			dummy[Utils.EJE_Y] = y-1;
-			dummy[Utils.EJE_X] = x;
-			posiciones.addFirst(dummy);
-		}
+		if(d == Direccion.ARRIBA) 
+			posiciones.addFirst(new Casilla(x, y+1));
+		else 
+			posiciones.addFirst(new Casilla(x, y-1));
 		
 		//CABEZA
-		dummy = new Integer[2];
-		dummy[Utils.EJE_Y] = y;
-		dummy[Utils.EJE_X] = x;
-		posiciones.addFirst(dummy);
+		posiciones.addFirst(new Casilla(x, y));
 		
 		this.direccion = d;
 		this.viva = true;
 		this.deboCrecer = false;
 		
-	}
+	}//End of builder
 	
 	public Serpiente clone() {
 		
@@ -58,13 +48,13 @@ public class Serpiente implements Cloneable
 		Direccion direccion = this.direccion;
 		boolean deboCrecer = this.deboCrecer;
 		boolean viva = this.viva;
-		LinkedList<Integer[]> posiciones = new LinkedList<>();
+		LinkedList<Casilla> posiciones = new LinkedList<>();
 		for(int i = 0; i< this.posiciones.size();i++) {
-			int componenteX = this.posiciones.get(i)[Utils.EJE_X].intValue();
-			int componenteY = this.posiciones.get(i)[Utils.EJE_Y].intValue();
-			Integer [] casilla = new Integer [2];
-			casilla[Utils.EJE_X] = new Integer(componenteX);
-			casilla[Utils.EJE_Y] = new Integer(componenteY);
+			int componenteX = this.posiciones.get(i).getEjeX();
+			int componenteY = this.posiciones.get(i).getEjeY();
+			Casilla casilla = new Casilla(componenteX, componenteY);
+			casilla.setEjeX(componenteX);
+			casilla.setEjeY(componenteY);
 			posiciones.add(casilla);
 		}//End of for
 		
@@ -80,11 +70,11 @@ public class Serpiente implements Cloneable
 		this.nombre = nombre;
 	}
 	
-	public LinkedList<Integer[]> getPosiciones(){
+	public LinkedList<Casilla> getPosiciones(){
 		return posiciones;
 	}
 	
-	public Integer[] cabeza() {
+	public Casilla cabeza() {
 		return this.posiciones.peekFirst();
 	}
 	
@@ -102,16 +92,14 @@ public class Serpiente implements Cloneable
 	}
 	
 	public boolean avanzar() {
-		Integer [] cabeza = posiciones.peekFirst();
-		Integer [] nuevaCabeza = new Integer[2];
-		nuevaCabeza[Utils.EJE_Y] = (int) cabeza[Utils.EJE_Y];
-		nuevaCabeza[Utils.EJE_X] = (int) cabeza[Utils.EJE_X];
+		Casilla cabeza = posiciones.peekFirst();
+		Casilla nuevaCabeza = new Casilla(cabeza.getEjeX(),cabeza.getEjeY());
 		
 		switch (direccion) {
-			case ARRIBA: nuevaCabeza[Utils.EJE_Y]--; break;
-			case ABAJO: nuevaCabeza[Utils.EJE_Y]++; break;
-			case DERECHA: nuevaCabeza[Utils.EJE_X]++; break;
-			case IZQUIERDA: nuevaCabeza[Utils.EJE_X]--; break;	
+			case ARRIBA: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()-1);break;
+			case ABAJO: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()+1);break;
+			case DERECHA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()+1);break;
+			case IZQUIERDA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()-1);break;
 		}//End of switch
 		posiciones.addFirst(nuevaCabeza);
 		if(this.deboCrecer)

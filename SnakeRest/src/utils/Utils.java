@@ -18,8 +18,7 @@ public class Utils {
 	public static final String POST = "POST";
 	public static final String CABEZA = "h";
 	public static final String CUERPO = "b";
-	public static final int EJE_Y = 0;
-	public static final int EJE_X = 1;
+	public static final int NO_VALIDO = -54;
 	
 	public static final String[] PALABRAS = {
 					"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Montadito", "Nano",
@@ -28,6 +27,7 @@ public class Utils {
 					"Viento", "Parto", "Trueno", "Cloaca", "Borrador", "Nuevo", "Guardado", "Automata", "Redes",
 					"Sonido", "Despertar", "Tarde", "Noche", "Abecedario", "Alfabeto"
 					};
+	
 		
 	
 	/*
