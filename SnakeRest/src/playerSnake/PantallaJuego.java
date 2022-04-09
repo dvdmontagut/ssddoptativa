@@ -58,7 +58,6 @@ public class PantallaJuego extends JDialog implements ActionListener {
 		 jpTA.add(juegoTA);
 		 add(jpTA);
 		 add(jpAbajo);
-		 
 		 setVisible(true);
 	}
 	
@@ -88,4 +87,3 @@ public class PantallaJuego extends JDialog implements ActionListener {
 	}
 	
 }
-

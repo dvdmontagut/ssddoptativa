@@ -11,14 +11,16 @@ public class PantallaEsperando extends JDialog {
 	private int turno;
 	public PantallaEsperando()
 	{
-		setModal(true);
-		setBounds(400,400,500,130);
+		setBounds(400,400,200,130);
+		setResizable(false);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
 		esperaL = new JLabel("Esperando");
 		turno=0;
+		add(esperaL);
+		setVisible(true);
 		cambioLabel();
 	}
 	private void cambioLabel() {
