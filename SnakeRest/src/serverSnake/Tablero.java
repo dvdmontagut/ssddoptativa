@@ -47,11 +47,11 @@ public class Tablero
 		casillas[fila][columna] = nombres.get(0).toUpperCase();
 		if(fila>Utils.ALTO/2){	
 			casillas[fila+1][columna] = nombres.get(0);
-			serpientes.add(new Serpiente(nombres.get(0), fila,columna,Direccion.ARRIBA));
+			serpientes.add(new Serpiente(nombres.get(0), columna,fila,Direccion.ARRIBA));
 		}
 		else {
 			casillas[fila-1][columna] = nombres.get(0);
-			serpientes.add(new Serpiente(nombres.get(0), fila,columna,Direccion.ABAJO));
+			serpientes.add(new Serpiente(nombres.get(0), columna,fila,Direccion.ABAJO));
 		}
 		
 		
@@ -67,12 +67,12 @@ public class Tablero
 			casillas[fila][columna] = nombres.get(i).toUpperCase();
 			if(fila>Utils.ALTO/2) {
 				casillas[fila+1][columna] = nombres.get(i);
-				serpientes.add(new Serpiente(nombres.get(i), fila,columna,Direccion.ARRIBA));
+				serpientes.add(new Serpiente(nombres.get(i), columna,fila,Direccion.ARRIBA));
 			}//End of if
 				
 			else {
 				casillas[fila-1][columna] = nombres.get(i);	
-				serpientes.add(new Serpiente(nombres.get(i), fila,columna,Direccion.ABAJO));
+				serpientes.add(new Serpiente(nombres.get(i), columna,fila,Direccion.ABAJO));
 			}//End of ELSE
 		}//end of for
 		//comida
@@ -90,8 +90,7 @@ public class Tablero
 	{
 		int columna;
 		Random r = new Random();
-		columna = r.nextInt(Utils.ANCHO);
-		columna=(columna==Utils.ANCHO-1)?columna-1:(columna==0)?1:columna; //EVITAR LOS BORDES IZQUIERDO Y DERECHO
+		columna = r.nextInt(Utils.ANCHO-2)+1; //EVITAR LOS BORDES IZQUIERDO Y DERECHO
 		return columna;
 	}//end of generarColumna
 
@@ -99,8 +98,7 @@ public class Tablero
 	{
 		int fila;
 		Random r = new Random();
-		fila = r.nextInt(Utils.ALTO);
-		fila=(fila==Utils.ALTO-1)?fila-1:(fila==0)?1:fila; //EVITAR LOS BORDES SUPERIOR E INFERIOR
+		fila = r.nextInt(Utils.ALTO-2)+1; //EVITAR LOS BORDES SUPERIOR E INFERIOR
 		return fila;
 	}//end of generarFila
 
@@ -109,21 +107,23 @@ public class Tablero
 	{
 		List<Casilla> posicionesCerca = new ArrayList<>();
 		
-		posicionesCerca.add(new Casilla (fila, columna)); //CENTRO
-		posicionesCerca.add(new Casilla (fila-1, columna)); //ARRIBA
-		posicionesCerca.add(new Casilla (fila-1, columna-1)); //ARRIBA IZQ
-		posicionesCerca.add(new Casilla (fila-1, columna+1)); //ARRIBA DER
-		posicionesCerca.add(new Casilla (fila, columna-1)); //IZQ
-		posicionesCerca.add(new Casilla (fila, columna+1)); //DER
-		posicionesCerca.add(new Casilla (fila+1, columna)); //ABAJO
-		posicionesCerca.add(new Casilla (fila+1, columna-1)); //ABAJO IZQ
-		posicionesCerca.add(new Casilla (fila+1, columna+1)); //ABAJO DER
-		posicionesCerca.add(new Casilla ((fila-2<0)?fila:fila-2, columna)); //ARRIBA +2
-		posicionesCerca.add(new Casilla (fila, (columna-2<0)?columna:columna-2)); //IZQ +2
-		posicionesCerca.add(new Casilla (fila, (columna+2>Utils.ANCHO-1)?columna:columna+2)); //DER +2
-		posicionesCerca.add(new Casilla ((fila+2>Utils.ALTO-1)?fila:fila+2, columna)); //ABAJO +2
+
+		posicionesCerca.add(new Casilla (columna-1, fila-1)); //ARRIBA IZQUIERDA
+		posicionesCerca.add(new Casilla (columna, fila-1)); //ARRIBA
+		posicionesCerca.add(new Casilla (columna+1, fila-1)); //ARRIBA DERECHA
+		posicionesCerca.add(new Casilla (columna-1, fila)); //IZQUIERDA
+		posicionesCerca.add(new Casilla (columna, fila)); //CENTRO
+		posicionesCerca.add(new Casilla (columna+1, fila)); //DERECHA
+		posicionesCerca.add(new Casilla (columna+1, fila+1)); //ARRIBA IZQUIERDA
+		posicionesCerca.add(new Casilla (columna, fila+1)); //ABAJO
+		posicionesCerca.add(new Casilla (columna-1, fila+1)); //ABAJO DERECHA
 		
-		
+		posicionesCerca.add(new Casilla ((columna-2<0)?columna:columna-2, fila)); //IZQ +2
+		posicionesCerca.add(new Casilla (columna, (fila-2<0)?fila:fila-2)); //ARR +2
+		posicionesCerca.add(new Casilla (columna, (fila+2>Utils.ALTO-1)?fila:fila+2)); //AB +2
+		posicionesCerca.add(new Casilla ((columna+2>Utils.ANCHO-1)?columna:columna+2, fila)); //DER +2		
+
+
 		for(Casilla i : posicionesCerca) 
 			if(this.casillas[i.getEjeY()][i.getEjeX()] != Utils.CASILLA_VACIA) return false;
 		
@@ -134,6 +134,7 @@ public class Tablero
 		
 		boolean flagGenerarComida = false;
 		//COPIAR LAS SERPIENTES REALES
+		this.serpientesFicticias = new ArrayList<>();
 		for(Serpiente s : this.serpientes) 
 			this.serpientesFicticias.add(s.clone());
 		
@@ -147,9 +148,7 @@ public class Tablero
 		
 		//COMPROBAR COMIDA
 		for(Serpiente s:this.serpientesFicticias)
-			if(s.isViva()&&
-					s.cabeza().getEjeX()==this.comida.getEjeX() &&
-					s.cabeza().getEjeY()==this.comida.getEjeY())
+			if(s.estaViva()&&s.cabeza().igualQue(comida))
 			{
 				s.comer();
 				flagGenerarComida = true;
@@ -158,7 +157,7 @@ public class Tablero
 		//Rescato
 		this.serpientes = new ArrayList<>();
 		for(Serpiente s: this.serpientesFicticias)
-			if(s.isViva())
+			if(s.estaViva())
 				this.serpientes.add(s.clone());
 		
 		//Generar la manzana
@@ -197,39 +196,54 @@ public class Tablero
 				if(cabeza) 
 					cabeza = false;
 				else 
-					cuerpos.putIfAbsent(i, Utils.CUERPO);
+					cuerpos.putIfAbsent(i, "54");
 			}//End of for
 			cabeza = true;
 		}//End of for
+		
 		//Me preocupo por si alguna cabeza colisiona con algun cuerpo
-		for(Serpiente s: this.serpientesFicticias) {
-			if(cuerpos.putIfAbsent(s.cabeza(), Utils.CABEZA)!=null){
-System.err.println("SERPIENTE "+s.getNombre()+ " choca con un cuerpo");
-				s.matar();
-			}//End of if
-		}//End of for
+		for(Serpiente s: this.serpientesFicticias) 
+					for(Casilla c: cuerpos.keySet())
+						if(s.cabeza().igualQue(c)) s.matar();
+		
 		//Choques de cabezas y salidas de mapa
-		for(Serpiente s: this.serpientesFicticias) {
-			if(serpientes.putIfAbsent(s.cabeza(), s)!=null){
-				System.err.println("SERPIENTE "+s.getNombre()+ " choca con la cabeza de "+ serpientes.get(s.cabeza()).getNombre());
-				s.matar();
-				serpientes.get(s.cabeza()).matar();
-			}//End of if
+		for(Serpiente s: this.serpientesFicticias) 
+		{
+			for(Casilla c: serpientes.keySet())
+			{
+				if(s.cabeza().igualQue(c)) 
+				{
+					s.matar();
+					serpientes.get(c).matar();
+				}//End of if
+			}
+			if(s.cabeza().getEjeX()==Utils.NO_VALIDO || s.cabeza().getEjeY()==Utils.NO_VALIDO) s.matar();
+			serpientes.putIfAbsent(s.cabeza(), s);
 			
-			if(s.cabeza().getEjeX()==Utils.NO_VALIDO || s.cabeza().getEjeY()==Utils.NO_VALIDO)
-				s.matar();
 		}//End of for
 		
-	}// ENd of comprobarColisiones
+	}// End of comprobarColisiones
 
 	private Casilla generarComida() {
 		List<Casilla> casillasVacias = new ArrayList<>();
 		for(int i=0;i<Utils.ALTO;i++)
 			for(int j=0; j<Utils.ANCHO;j++)
 				if(casillas[i][j]==Utils.CASILLA_VACIA) 
-					casillasVacias.add(new Casilla(i,j));
+					casillasVacias.add(new Casilla(j,i));
 		Random r = new Random();
 		Casilla posComida = casillasVacias.get(r.nextInt(casillasVacias.size()));
 		return posComida;
+	}
+	
+	public void cambiarDireccion(String nombre, Direccion direccion)
+	{
+		for(Serpiente s: this.serpientes)
+			if(s.getNombre().equals(nombre)) {s.setDireccion(direccion); break;}
+	}
+	
+	public void matar(String nombre)
+	{
+		for(Serpiente s: this.serpientes)
+			if(s.getNombre().equals(nombre)) {s.matar(); break;}
 	}
 }

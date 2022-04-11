@@ -20,7 +20,7 @@ public class Casilla {
 	}//End of getter
 
 	public void setEjeX(int x) {
-		if(x<0||x>=Utils.ALTO) this.ejeX = Utils.NO_VALIDO;
+		if(x<0||x>=Utils.ANCHO) this.ejeX = Utils.NO_VALIDO;
 		else this.ejeX = x;
 	}//End of setter
 
@@ -29,7 +29,7 @@ public class Casilla {
 	}//End of getter
 
 	public void setEjeY(int y) {
-		if(y<0 || y>=Utils.ANCHO) this.ejeY = Utils.NO_VALIDO;
+		if(y<0 || y>=Utils.ALTO) this.ejeY = Utils.NO_VALIDO;
 		else this.ejeY = y;
 	}//End of setter
 	

@@ -3,25 +3,29 @@ package playerSnake;
 import java.awt.Font;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.Visibility;
 
 import javax.swing.*;
 
 import utils.Direccion;
+import utils.Utils;
 
-public class PantallaJuego extends JDialog implements ActionListener {
-
+public class PantallaJuego extends JDialog implements ActionListener 
+{
+	private static final long serialVersionUID = 1L;
+	
 	private JButton botonA, botonS, botonD, botonW, abandonar;
 	private JTextArea juegoTA;
 	private JPanel jpAbajo, jpDirecs, jpTA;
-	private String nombre;
+	private String nombre, ip;
+	private Timer t;
 	
-	public PantallaJuego(String nombre)
+	public PantallaJuego(String nombre, String ip)
 	{
-		setModal(true);
 		this.nombre=nombre;
+		this.ip=ip;
+		
 
-		setBounds(400,400,500,500);
+		setBounds(400,400,700,700);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -38,20 +42,21 @@ public class PantallaJuego extends JDialog implements ActionListener {
 		 	jpDirecs = new JPanel();
 		 	jpDirecs.setLayout(new GridLayout(3,3));
 		 	jpDirecs.setMaximumSize(new Dimension(90,90));
-			 	botonA=new JButton("A"); botonA.addActionListener(this); botonA.setMaximumSize(new Dimension(30,30));
-			 	botonS=new JButton("S"); botonS.addActionListener(this); botonS.setMaximumSize(new Dimension(30,30));
-			 	botonD=new JButton("D"); botonD.addActionListener(this); botonD.setMaximumSize(new Dimension(30,30));
-			 	botonW=new JButton("W"); botonW.addActionListener(this); botonW.setMaximumSize(new Dimension(30,30));
+			 	botonA=new JButton("<"); 	botonA.addActionListener(this); botonA.setMaximumSize(new Dimension(30,30));
+			 	botonS=new JButton("V"); 	botonS.addActionListener(this); botonS.setMaximumSize(new Dimension(30,30));
+			 	botonD=new JButton(">"); 	botonD.addActionListener(this); botonD.setMaximumSize(new Dimension(30,30));
+			 	botonW=new JButton("/\\");	botonW.addActionListener(this); botonW.setMaximumSize(new Dimension(30,30));
 			 	jpDirecs.add(new JButton());
 			 	jpDirecs.add(botonW);
 			 	jpDirecs.add(new JButton());
 			 	jpDirecs.add(botonA);
-			 	jpDirecs.add(new JButton());
+			 	jpDirecs.add(new JButton(nombre.toUpperCase()));
 			 	jpDirecs.add(botonD);
 			 	jpDirecs.add(new JButton());
 			 	jpDirecs.add(botonS);
 			 	jpDirecs.add(new JButton());
 		 	abandonar=new JButton("Abandonar");
+		 	abandonar.addActionListener(this);
 		 jpAbajo.add(jpDirecs);
 		 jpAbajo.add(new JSeparator());
 		 jpAbajo.add(abandonar);
@@ -59,6 +64,21 @@ public class PantallaJuego extends JDialog implements ActionListener {
 		 add(jpTA);
 		 add(jpAbajo);
 		 setVisible(true);
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/comenzarPartida";
+		try{
+			Utils.peticion_throws(link, Utils.GET);
+		}catch(Exception ex)
+		{
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(
+					this, 
+					"Error comenzando la partida", 
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
+			this.dispose();
+		}
+		t=new Timer(1000,this);
+		t.start();
 	}
 	
 	@Override
@@ -73,17 +93,30 @@ public class PantallaJuego extends JDialog implements ActionListener {
 			case 3: mandarDireccion(Direccion.DERECHA); break;
 			case 4: mandarDireccion(Direccion.ARRIBA); break;
 			case 5: abandonar(); break;
+			case 0: pintarTablero(); break;
 		}
 	}
-
-	private void abandonar() {
-		// TODO Auto-generated method stub
-		
+	
+	private void pintarTablero()
+	{
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/verTablero";
+		String respuesta=Utils.peticion(link, Utils.GET);
+		juegoTA.setText(Utils.factoryTablero(respuesta));
+		t=new Timer(Utils.TIEMPO_ENTRE_TURNOS,this);
+		t.start();
 	}
 
-	private void mandarDireccion(Direccion izquierda) {
-		// TODO Auto-generated method stub
-		
+	private void abandonar()
+	{
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/abandonar";
+		Utils.peticion(link, Utils.POST);
+		this.dispose();
+	}
+
+	private void mandarDireccion(Direccion d)
+	{
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/cambioDireccion?nombre="+nombre+"&direccion="+d.toString().toUpperCase();
+		Utils.peticion(link, Utils.POST);
 	}
 	
 }

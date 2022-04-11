@@ -22,10 +22,10 @@ public class Serpiente implements Cloneable
 		this.viva = viva;
 	}//End of builder
 	
-	public Serpiente(String nombre, int y, int x, Direccion d) {
+	public Serpiente(String nombre, int x, int y, Direccion d) {
 		
 		this.nombre = nombre;
-		posiciones = new LinkedList<>();
+		posiciones = new LinkedList<Casilla>();
 		
 		//CUERPO
 		if(d == Direccion.ARRIBA) 
@@ -53,8 +53,6 @@ public class Serpiente implements Cloneable
 			int componenteX = this.posiciones.get(i).getEjeX();
 			int componenteY = this.posiciones.get(i).getEjeY();
 			Casilla casilla = new Casilla(componenteX, componenteY);
-			casilla.setEjeX(componenteX);
-			casilla.setEjeY(componenteY);
 			posiciones.add(casilla);
 		}//End of for
 		
@@ -64,10 +62,6 @@ public class Serpiente implements Cloneable
 	
 	public String getNombre() {
 		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 	
 	public LinkedList<Casilla> getPosiciones(){
@@ -86,10 +80,24 @@ public class Serpiente implements Cloneable
 		this.deboCrecer=true;
 	}
 	
-	public boolean setDireccion(Direccion d) {
-		this.direccion = d;
-		return true;
+	public void setDireccion(Direccion d) 
+	{
+		if(d==Direccion.ABAJO && this.direccion!=Direccion.ARRIBA) this.direccion = d;
+		if(d==Direccion.ARRIBA && this.direccion!=Direccion.ABAJO) this.direccion = d;
+		if(d==Direccion.IZQUIERDA && this.direccion!=Direccion.DERECHA) this.direccion = d;
+		if(d==Direccion.DERECHA && this.direccion!=Direccion.IZQUIERDA) this.direccion = d;
 	}
+
+	public boolean estaViva() {
+		return viva;
+	}
+
+	public void matar() {
+		this.viva = false;
+	}//End of matar
+	
+	
+	
 	
 	public boolean avanzar() {
 		Casilla cabeza = posiciones.peekFirst();
@@ -108,23 +116,6 @@ public class Serpiente implements Cloneable
 			posiciones.removeLast();
 		return true;
 	}//End of avanzar
-	
-
-	public boolean isDeboCrecer() {
-		return deboCrecer;
-	}
-
-	public void setDeboCrecer(boolean deboCrecer) {
-		this.deboCrecer = deboCrecer;
-	}
-
-	public boolean isViva() {
-		return viva;
-	}
-
-	public void matar() {
-		this.viva = false;
-	}//End of matar
 	
 	
 	

@@ -6,13 +6,16 @@ import utils.*;
 
 public class PantallaPrincipal extends JFrame implements ActionListener
 {
+	private static final long serialVersionUID = 1L;
+	
 	JPanel jp;
 	JLabel titulo;
 	JButton crear,unirse;
+	
 	public PantallaPrincipal()
 	{
 
-		setBounds(400,400,300,400);
+		setBounds(400,400,300,150);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -29,6 +32,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 			jp.add(unirse);
 		add(jp);
 		this.setVisible(true);
+		
 	}//End of PantallaPrincipal
 
 	@Override
@@ -44,31 +48,34 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 	}//End of actionPerformed
 
 	private void unirseAUnaSala() {
-		this.setVisible(false);
 		PantallaInscripcion pi = new PantallaInscripcion();
-		if(pi.esCancelado())
-		{
-			this.setVisible(true);
-			return;
-		}
+		if(pi.esCancelado()) return;
+		
 		String ipTarget = pi.getIpTarget();
 		String nombreSala = pi.getNombreSala();
 		String nombre = pi.getNombreJug();
 		nombre=nombre.toLowerCase();
-
+		if(ipTarget.contains(" ") ||nombreSala.contains(" ") ||nombre.contains(" "))
+		{
+			JOptionPane.showMessageDialog(
+					this, 
+					"No debe haber espacios", 
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}//End of if
+		
 		String link = "http://"+ipTarget+":8080/SnakeRest/SnakeMRV/game/inscribirse?sala="+nombreSala+"&nombre="+nombre;
 		String respuesta="";
 		try {
-			respuesta=Utils.peticion_throws(link, Utils.GET);
+			respuesta=Utils.peticion_throws(link, Utils.POST);
 		}catch(Exception e)
 		{
-			e.printStackTrace();
 			JOptionPane.showMessageDialog(
 					this, 
 					"Error de servidor", 
 					"ERROR",
 					JOptionPane.ERROR_MESSAGE);
-			this.setVisible(true);
 			return;
 		}
 		if(respuesta.contains("ERROR"))
@@ -78,7 +85,6 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 					respuesta, 
 					"ERROR",
 					JOptionPane.ERROR_MESSAGE);
-			this.setVisible(true);
 			return;
 		}
 		JOptionPane.showMessageDialog(
@@ -86,10 +92,25 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 				respuesta, 
 				"",
 				JOptionPane.INFORMATION_MESSAGE);
-		PantallaEsperando pe = new PantallaEsperando();
-		//Espera a barrera
-		PantallaJuego pjg = new PantallaJuego(nombre);
-		this.setVisible(true);
+		Object o = new Object();
+		PantallaEsperando pe = new PantallaEsperando(ipTarget, o);
+		try 
+		{
+			synchronized(o)
+			{
+				o.wait();
+			}
+		} catch (Exception e) 
+		{
+			JOptionPane.showMessageDialog(
+					this, 
+					"Error esperando al inicio de la partida", 
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(pe.esCancelado()) return;
+		new PantallaJuego(nombre, ipTarget);
 	}//End of unirseAUnaSala
 
 	private void crearNuevaSala() {
@@ -128,8 +149,8 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 				"",
 				JOptionPane.INFORMATION_MESSAGE);
 			
-		String nJugs = (String)JOptionPane.showInputDialog(this,"Número de jugadores: ",
-				"", JOptionPane.PLAIN_MESSAGE, null, null, "localhost");
+		String nJugs = (String)JOptionPane.showInputDialog(this,"N�mero de jugadores: ",
+				"", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		int nj = 0;
 		try
 		{
@@ -138,7 +159,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 			{
 				JOptionPane.showMessageDialog(
 						this, 
-						"El número tiene que ser positivo", 
+						"El n�mero tiene que ser positivo", 
 						"WARNING",
 						JOptionPane.WARNING_MESSAGE);
 				this.setVisible(true);
@@ -148,7 +169,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		{
 			JOptionPane.showMessageDialog(
 					this, 
-					"Tiene que ser un número", 
+					"Tiene que ser un n�mero", 
 					"ERROR",
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(true);
@@ -157,9 +178,11 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		
 		link = "http://"+ipNueva+":8080/SnakeRest/SnakeMRV/game/crearSala?nJugadores="+nj;
 		try {
-			respuesta=Utils.peticion_throws(link, Utils.GET);
+			respuesta=Utils.peticion_throws(link, Utils.POST);
 		}catch(Exception e)
 		{
+			System.out.println(e);
+			System.out.flush();
 			JOptionPane.showMessageDialog(
 					this, 
 					"No se ha encontrado el servidor", 

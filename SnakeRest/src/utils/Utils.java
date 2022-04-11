@@ -7,26 +7,25 @@ import java.net.URL;
 import java.util.concurrent.Semaphore;
 
 public class Utils {
-
+	
 	public static final String SEPARADOR1=",";
 	public static final String SEPARADOR2=";";
 	public static final int ANCHO = 20;
 	public static final int ALTO = 15;
-	public static final String CASILLA_VACIA="·";
+	public static final String CASILLA_VACIA="-";
 	public static final String CASILLA_COMIDA="*";
 	public static final String GET = "GET";
 	public static final String POST = "POST";
-	public static final String CABEZA = "h";
-	public static final String CUERPO = "b";
 	public static final int NO_VALIDO = -54;
+	public static final int TIEMPO_ENTRE_TURNOS = 30;
 	
 	public static final String[] PALABRAS = {
-					"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Montadito", "Nano",
-					"Vacia", "Konami", "Houston", "Remate", "Tablero", "Jugar", "Tiempo", "Distribuido", "PLAN",
-					"Alejo", "Oficial", "Rey", "Reina", "Casilla", "Comida", "Video", "Agua", "Fuego", "Rayo",
-					"Viento", "Parto", "Trueno", "Cloaca", "Borrador", "Nuevo", "Guardado", "Automata", "Redes",
-					"Sonido", "Despertar", "Tarde", "Noche", "Abecedario", "Alfabeto"
-					};
+				"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Montadito", "Nano",
+				"Vacia", "Konami", "Houston", "Remate", "Tablero", "Jugar", "Tiempo", "Distribuido", "PLAN",
+				"Alejo", "Oficial", "Rey", "Reina", "Casilla", "Comida", "Video", "Agua", "Fuego", "Rayo",
+				"Viento", "Parto", "Trueno", "Cloaca", "Borrador", "Nuevo", "Guardado", "Automata", "Redes",
+				"Sonido", "Despertar", "Tarde", "Noche", "Abecedario", "Alfabeto"
+	};
 	
 		
 	
@@ -42,12 +41,11 @@ public class Utils {
 		try {
 			URL url;
 			String output;
-			//System.out.println(LocalDateTime.now()+": "+link);
 			url = new URL(link);
 			StringBuilder sb = new StringBuilder();
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod(method);
-			if (conn.getResponseCode() != 200) {
+			if (conn.getResponseCode() > 210) {
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
@@ -71,7 +69,7 @@ public class Utils {
 			StringBuilder sb = new StringBuilder();
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod(method);
-			if (conn.getResponseCode() != 200) {
+			if (conn.getResponseCode() > 210) {
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));

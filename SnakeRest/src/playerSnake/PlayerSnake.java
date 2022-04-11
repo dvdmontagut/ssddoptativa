@@ -1,16 +1,6 @@
 package playerSnake;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import utils.*;
-
-
-
-
-
-
-//BORRAR
-import serverSnake.Serpiente;
 
 
 public class PlayerSnake {

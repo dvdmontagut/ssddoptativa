@@ -1,42 +1,66 @@
 package playerSnake;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 import utils.Utils;
 
 
-public class PantallaEsperando extends JDialog {
+public class PantallaEsperando extends JDialog implements ActionListener 
+{
+	private static final long serialVersionUID = 1L;
 	
 	private JLabel esperaL;
-	private int turno;
-	public PantallaEsperando()
+	private boolean bien;
+	
+	public PantallaEsperando(String ip, Object o)
 	{
-		setBounds(400,400,200,130);
+		bien=false;
+		setBounds(400,400,500,150);
 		setResizable(false);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
-		esperaL = new JLabel("Esperando");
-		turno=0;
+		esperaL = new JLabel("Esperando a que se unan los dem�s jugadores...");
 		add(esperaL);
 		setVisible(true);
-		cambioLabel();
-	}
-	private void cambioLabel() {
-		while(true)
+
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/esperarComienzo";
+		String respuesta="";
+		try{
+			respuesta = Utils.peticion_throws(link, Utils.GET);
+		}catch(Exception ex)
 		{
-			Utils.dormir(10);
-			switch(turno)
-			{
-				case 0: turno=1; 	esperaL.setText("Esperando.");	break;
-				case 1: turno=2;   esperaL.setText("Esperando.."); 	break;
-				case 2: turno=3;  esperaL.setText("Esperando...");	break;
-				case 3: turno=0;     esperaL.setText("Esperando"); 	break;
-			}
-			//Peticion rest pa preguntar si ya hay que empezar
-			//if ya hay que empezar this.dispose()
+			JOptionPane.showMessageDialog(
+					this, 
+					"Error de servidor", 
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
+			this.dispose();
 		}
+		if(respuesta.contains("ERROR"))
+		{
+			JOptionPane.showMessageDialog(
+					this, 
+					respuesta, 
+					"ERROR",
+					JOptionPane.ERROR_MESSAGE);
+			this.dispose();
+		}
+		bien=true;
+		Avisador a = new Avisador(o);
+		a.start();
+		new Timer(10, this);
+	}
+	
+	public boolean esCancelado() {return !bien;}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.dispose();
 	}
 
 }

@@ -3,10 +3,11 @@ package playerSnake;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import utils.*;
 
 public class PantallaInscripcion extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = 1L;
+	
 	private JTextField ipTF, salaTF, nbTF;
 	private JLabel ipL, salaL, nbL;
 	private JButton ok, volver;
@@ -18,31 +19,31 @@ public class PantallaInscripcion extends JDialog implements ActionListener
 	{
 		setModal(true);
 		bien=false;
-		setBounds(400,400,500,130);
+		setBounds(400,400,700,250);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
 
 		jp1 = new JPanel();
-		jp1.setLayout(new GridLayout(0,2));
-		jp1.setMaximumSize(new Dimension(500,40));
+		jp1.setLayout(new GridLayout(0,3));
+		jp1.setMaximumSize(new Dimension(500,60));
 		jp1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 			jp11 = new JPanel();
 			jp11.setLayout(new BoxLayout(jp11, BoxLayout.Y_AXIS));
-				salaL = new JLabel("ID del nuevo proceso: ");
+				ipL = new JLabel("IP de la m�quina: ");
 				ipTF = new JTextField();
-				jp11.add(salaL);
+				jp11.add(ipL);
 				jp11.add(ipTF);
 			jp12 = new JPanel();
 			jp12.setLayout(new BoxLayout(jp12, BoxLayout.Y_AXIS));
-				ipL = new JLabel ("Seleccione la máquina: ");
+				salaL = new JLabel ("Nombre de la sala: ");
 				salaTF = new JTextField();
-				jp12.add(ipL);
+				jp12.add(salaL);
 				jp12.add(salaTF);
 			jp13 = new JPanel();
 			jp13.setLayout(new BoxLayout(jp13, BoxLayout.Y_AXIS));
-			 	nbL = new JLabel("Escriba su nombre (1 letra): ");
+			 	nbL = new JLabel("Nombre (1 letra): ");
 			 	nbTF = new JTextField();
 			 	jp13.add(nbL);
 			 	jp13.add(nbTF);
