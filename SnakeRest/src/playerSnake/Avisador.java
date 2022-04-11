@@ -4,6 +4,12 @@ import javax.swing.Timer;
 
 import utils.Utils;
 
+/**
+ * 
+ *
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 public class Avisador extends Thread {
 	
 	private Object owo;

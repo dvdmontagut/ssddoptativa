@@ -4,6 +4,12 @@ import java.awt.event.*;
 import javax.swing.*;
 import utils.*;
 
+/**
+ * 
+ *
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 public class PantallaPrincipal extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;

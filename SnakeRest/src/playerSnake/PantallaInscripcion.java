@@ -4,6 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * 
+ *
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 public class PantallaInscripcion extends JDialog implements ActionListener
 {
 	private static final long serialVersionUID = 1L;

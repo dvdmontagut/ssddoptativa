@@ -9,6 +9,12 @@ import javax.swing.*;
 import utils.Direccion;
 import utils.Utils;
 
+/**
+ * 
+ *
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 public class PantallaJuego extends JDialog implements ActionListener 
 {
 	private static final long serialVersionUID = 1L;
