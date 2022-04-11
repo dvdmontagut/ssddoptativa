@@ -14,9 +14,11 @@ public class PantallaEsperando extends JDialog implements ActionListener
 	
 	private JLabel esperaL;
 	private boolean bien;
+	Object owo;
 	
-	public PantallaEsperando(String ip, Object o)
+	public PantallaEsperando(String ip, Object owo)
 	{
+		this.owo=owo;
 		bien=false;
 		setBounds(400,400,500,150);
 		setResizable(false);
@@ -31,7 +33,7 @@ public class PantallaEsperando extends JDialog implements ActionListener
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/esperarComienzo";
 		String respuesta="";
 		try{
-			respuesta = Utils.peticion_throws(link, Utils.GET);
+			respuesta = Utils.peticion_throws(link);
 		}catch(Exception ex)
 		{
 			JOptionPane.showMessageDialog(
@@ -51,15 +53,16 @@ public class PantallaEsperando extends JDialog implements ActionListener
 			this.dispose();
 		}
 		bien=true;
-		Avisador a = new Avisador(o);
+		Avisador a = new Avisador(owo, this);
 		a.start();
-		new Timer(10, this);
 	}
 	
 	public boolean esCancelado() {return !bien;}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
+		owo.notifyAll();
 		this.dispose();
 	}
 

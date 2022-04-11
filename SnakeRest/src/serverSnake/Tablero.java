@@ -136,7 +136,8 @@ public class Tablero
 		//COPIAR LAS SERPIENTES REALES
 		this.serpientesFicticias = new ArrayList<>();
 		for(Serpiente s : this.serpientes) 
-			this.serpientesFicticias.add(s.clone());
+			if(s.estaViva()) 
+				this.serpientesFicticias.add(s.clone());
 		
 		//AVANZAMOS LAS SERPIENTES FICTICIAS
 		for(Serpiente s: this.serpientesFicticias)
@@ -152,7 +153,6 @@ public class Tablero
 			{
 				s.comer();
 				flagGenerarComida = true;
-				//comida = this.generarComida();
 			}//End of if
 		//Rescato
 		this.serpientes = new ArrayList<>();

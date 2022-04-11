@@ -65,7 +65,7 @@ public class ServerSnake {
 		 * @param nj
 		 * @return
 		 */
-		@POST
+		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("crearSala")
 		public String crearSala(@QueryParam(value = "nJugadores") int nj) {
@@ -86,8 +86,8 @@ public class ServerSnake {
 			}
 			return "ERROR. AHORA ESTAN EN PARTIDA BRO.";
 		}
-		
-		@POST
+
+		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("inscribirse")
 		public String inscribirse(@QueryParam(value = "sala") String sala, @QueryParam(value = "nombre") String nombre) {
@@ -104,8 +104,8 @@ public class ServerSnake {
 			tablero.construir(numeroInscritos, nombres);
 			return "Inscripcion realizada con exito";
 		}
-		
-		@POST
+
+		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("cambioDireccion")
 		public void cambioDireccion(@QueryParam(value = "nombre") String nombre, @QueryParam(value="direccion") String d) 
@@ -122,8 +122,8 @@ public class ServerSnake {
 				if(s.equals(nombre))
 					{tablero.cambiarDireccion(nombre, direccion); break;}
 		}
-		
-		@POST
+
+		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("abandonar")
 		public void abandonar(@QueryParam(value = "nombre") String nombre) 

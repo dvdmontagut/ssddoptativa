@@ -68,7 +68,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		String link = "http://"+ipTarget+":8080/SnakeRest/SnakeMRV/game/inscribirse?sala="+nombreSala+"&nombre="+nombre;
 		String respuesta="";
 		try {
-			respuesta=Utils.peticion_throws(link, Utils.POST);
+			respuesta=Utils.peticion_throws(link);
 		}catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(
@@ -122,7 +122,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		String link = "http://"+ipNueva+":8080/SnakeRest/SnakeMRV/game/inicioDelServidor";
 		String respuesta="";
 		try {
-			respuesta=Utils.peticion_throws(link, Utils.GET);
+			respuesta=Utils.peticion_throws(link);
 		}catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(
@@ -178,7 +178,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		
 		link = "http://"+ipNueva+":8080/SnakeRest/SnakeMRV/game/crearSala?nJugadores="+nj;
 		try {
-			respuesta=Utils.peticion_throws(link, Utils.POST);
+			respuesta=Utils.peticion_throws(link);
 		}catch(Exception e)
 		{
 			System.out.println(e);

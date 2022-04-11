@@ -66,7 +66,7 @@ public class PantallaJuego extends JDialog implements ActionListener
 		 setVisible(true);
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/comenzarPartida";
 		try{
-			Utils.peticion_throws(link, Utils.GET);
+			Utils.peticion_throws(link);
 		}catch(Exception ex)
 		{
 			ex.printStackTrace();
@@ -100,7 +100,13 @@ public class PantallaJuego extends JDialog implements ActionListener
 	private void pintarTablero()
 	{
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/verTablero";
-		String respuesta=Utils.peticion(link, Utils.GET);
+		String respuesta="";
+		try {
+			respuesta=Utils.peticion_throws(link);
+		}catch(Exception e)
+		{
+			this.dispose();
+		}
 		juegoTA.setText(Utils.factoryTablero(respuesta));
 		t=new Timer(Utils.TIEMPO_ENTRE_TURNOS,this);
 		t.start();
@@ -108,15 +114,15 @@ public class PantallaJuego extends JDialog implements ActionListener
 
 	private void abandonar()
 	{
-		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/abandonar";
-		Utils.peticion(link, Utils.POST);
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/abandonar?nombre="+this.nombre;
+		Utils.peticion(link);
 		this.dispose();
 	}
 
 	private void mandarDireccion(Direccion d)
 	{
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/cambioDireccion?nombre="+nombre+"&direccion="+d.toString().toUpperCase();
-		Utils.peticion(link, Utils.POST);
+		Utils.peticion(link);
 	}
 	
 }
