@@ -25,6 +25,11 @@ public class PantallaJuego extends JDialog implements ActionListener
 	private String nombre, ip;
 	private Timer t;
 	
+	/**
+	 * Constructor de la pantalla de juego
+	 * @param nombre
+	 * @param ip
+	 */
 	public PantallaJuego(String nombre, String ip)
 	{
 		this.nombre=nombre;
@@ -41,7 +46,7 @@ public class PantallaJuego extends JDialog implements ActionListener
 		jpTA.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		juegoTA=new JTextArea();
 		juegoTA.setEditable(false);
-		juegoTA.setFont(new Font(Font.MONOSPACED, Font.PLAIN,12));
+		juegoTA.setFont(new Font(Font.MONOSPACED, Font.PLAIN,20));
 		juegoTA.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		jpAbajo=new JPanel();
 		jpAbajo.setLayout(new BoxLayout(jpAbajo, BoxLayout.X_AXIS));
@@ -49,9 +54,9 @@ public class PantallaJuego extends JDialog implements ActionListener
 		 	jpDirecs.setLayout(new GridLayout(3,3));
 		 	jpDirecs.setMaximumSize(new Dimension(90,90));
 			 	botonA=new JButton("<"); 	botonA.addActionListener(this); botonA.setMaximumSize(new Dimension(30,30));
-			 	botonS=new JButton("V"); 	botonS.addActionListener(this); botonS.setMaximumSize(new Dimension(30,30));
+			 	botonS=new JButton("v"); 	botonS.addActionListener(this); botonS.setMaximumSize(new Dimension(30,30));
 			 	botonD=new JButton(">"); 	botonD.addActionListener(this); botonD.setMaximumSize(new Dimension(30,30));
-			 	botonW=new JButton("/\\");	botonW.addActionListener(this); botonW.setMaximumSize(new Dimension(30,30));
+			 	botonW=new JButton("^");	botonW.addActionListener(this); botonW.setMaximumSize(new Dimension(30,30));
 			 	jpDirecs.add(new JButton());
 			 	jpDirecs.add(botonW);
 			 	jpDirecs.add(new JButton());
@@ -70,7 +75,8 @@ public class PantallaJuego extends JDialog implements ActionListener
 		 add(jpTA);
 		 add(jpAbajo);
 		 setVisible(true);
-		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/comenzarPartida";
+		 
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/comenzarPartida"; //ES NECESARIO INICIAR LA PARTIDA PARA QUE ARRANQUE DIRECTAMENTE
 		try{
 			Utils.peticion_throws(link);
 		}catch(Exception ex)
@@ -103,6 +109,9 @@ public class PantallaJuego extends JDialog implements ActionListener
 		}
 	}
 	
+	/**
+	 * LLama a ver tablero para poder representarlo
+	 */
 	private void pintarTablero()
 	{
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/verTablero";
@@ -118,6 +127,9 @@ public class PantallaJuego extends JDialog implements ActionListener
 		t.start();
 	}
 
+	/** 
+	 * Te permite abandonar la partida y que se muera tu serpiente
+	 */
 	private void abandonar()
 	{
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/abandonar?nombre="+this.nombre;
@@ -125,6 +137,10 @@ public class PantallaJuego extends JDialog implements ActionListener
 		this.dispose();
 	}
 
+	/**
+	 * Mandas la direccion segun la flecha que toques
+	 * @param d
+	 */
 	private void mandarDireccion(Direccion d)
 	{
 		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/cambioDireccion?nombre="+nombre+"&direccion="+d.toString().toUpperCase();

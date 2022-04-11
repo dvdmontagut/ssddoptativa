@@ -6,7 +6,7 @@ import utils.*;
 
 /**
  * 
- *
+ * Pantalla principal del juego desde el lado del cliente
  * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
  *
  */
@@ -18,6 +18,9 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 	JLabel titulo;
 	JButton crear,unirse;
 	
+	/**
+	 * Constructor, dibuja lo que se va a ver en la pantalla
+	 */
 	public PantallaPrincipal()
 	{
 
@@ -53,6 +56,9 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		
 	}//End of actionPerformed
 
+	/**
+	 * Hace la peticion de inscribirse y comprueba erores
+	 */
 	private void unirseAUnaSala() {
 		PantallaInscripcion pi = new PantallaInscripcion();
 		if(pi.esCancelado()) return;
@@ -119,6 +125,9 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		new PantallaJuego(nombre, ipTarget);
 	}//End of unirseAUnaSala
 
+	/**
+	 * Hace la peticion de inicio del servidor, crearSala y comprueba errores para luego mostrar una respuesta
+	 */
 	private void crearNuevaSala() {
 		
 		this.setVisible(false);
@@ -155,7 +164,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 				"",
 				JOptionPane.INFORMATION_MESSAGE);
 			
-		String nJugs = (String)JOptionPane.showInputDialog(this,"Nï¿½mero de jugadores: ",
+		String nJugs = (String)JOptionPane.showInputDialog(this,"Número de jugadores: ",
 				"", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		int nj = 0;
 		try
@@ -181,7 +190,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 			this.setVisible(true);
 			return;
 		}
-		
+		//SE LLAMA A CREAR SALA Y SE COMPRUEBAN ERRORES
 		link = "http://"+ipNueva+":8080/SnakeRest/SnakeMRV/game/crearSala?nJugadores="+nj;
 		try {
 			respuesta=Utils.peticion_throws(link);
