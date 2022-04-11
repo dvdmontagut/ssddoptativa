@@ -3,16 +3,35 @@ package serverSnake;
 import java.util.*;
 import utils.*;
 
-public class Serpiente implements Cloneable 
+/**
+ * 
+ * Representa una serpiente del juego SNAKE
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
+public class Serpiente 
 {
 	
 	private String nombre;
+	/**
+	 * Usamos una LinkedList a modo de cola porque es la estructura de datos
+	 * que mejor se asemeja al funcionamiento del Snake ya que nos permite
+	 * añadir por el principio y eliminar por el final para asi recrear el movimiento
+	 * de la serpiente.
+	 */
 	private LinkedList<Casilla> posiciones;
 	private Direccion direccion;
 	private boolean deboCrecer;
 	private boolean viva;
 	
-	
+	/**
+	 * Constructor usado en el metodo de clonacion necesita de todos los atributos
+	 * @param nombre
+	 * @param posiciones
+	 * @param direccion
+	 * @param deboCrecer
+	 * @param viva
+	 */
 	private Serpiente(String nombre, LinkedList<Casilla> posiciones, 
 			Direccion direccion, boolean deboCrecer, boolean viva) {
 		this.nombre = nombre;
@@ -22,16 +41,25 @@ public class Serpiente implements Cloneable
 		this.viva = viva;
 	}//End of builder
 	
+	/**
+	 * Constructor para crear una serpiente "recien nacida"
+	 * @param nombre Letra que definiran el dibujo de la serpiente 
+	 * @param x Coordenada x de la cabeza
+	 * @param y Coordenada y de la cabeza
+	 * @param d Direccion inicial, el cuerpo se situara al contrario que esta direccion
+	 */
 	public Serpiente(String nombre, int x, int y, Direccion d) {
 		
 		this.nombre = nombre;
 		posiciones = new LinkedList<Casilla>();
 		
 		//CUERPO
-		if(d == Direccion.ARRIBA) 
-			posiciones.addFirst(new Casilla(x, y+1));
-		else 
-			posiciones.addFirst(new Casilla(x, y-1));
+		switch(d) {
+			case ARRIBA: posiciones.addFirst(new Casilla(x, y+1)); break;
+			case ABAJO: posiciones.addFirst(new Casilla(x, y-1)); break;
+			case DERECHA: posiciones.addFirst(new Casilla(x+1, y)); break;
+			case IZQUIERDA: posiciones.addFirst(new Casilla(x-1, y)); break;
+		}//End of switch
 		
 		//CABEZA
 		posiciones.addFirst(new Casilla(x, y));
@@ -42,6 +70,10 @@ public class Serpiente implements Cloneable
 		
 	}//End of builder
 	
+	/**
+	 * Clona un objeto serpiente pero sin copiar las direcciones de memoria
+	 * @return devuelve un objeto serpiente clonada de la serpiente que invoque el metodo
+	 */
 	public Serpiente clone() {
 		
 		String nombre = this.nombre;
@@ -64,10 +96,15 @@ public class Serpiente implements Cloneable
 		return nombre;
 	}
 	
+	
 	public LinkedList<Casilla> getPosiciones(){
 		return posiciones;
 	}
 	
+	/**
+	 * Devuelve la Casilla donde se situa la cabeza de la serpiente que invoca el metodo
+	 * @return Objeto Casilla
+	 */
 	public Casilla cabeza() {
 		return this.posiciones.peekFirst();
 	}
@@ -75,11 +112,17 @@ public class Serpiente implements Cloneable
 	
 	
 	
-	
+	/**
+	 * Metodo para indicar que la serpiente ha crecido y en el siguiente turno logico debe aumentar su tamaño
+	 */
 	public void comer() {
 		this.deboCrecer=true;
 	}
 	
+	/**
+	 * Metodo que cambia la direccion de la serpiente siempre que no sea un giro de 180 grados
+	 * @param d
+	 */
 	public void setDireccion(Direccion d) 
 	{
 		if(d==Direccion.ABAJO && this.direccion!=Direccion.ARRIBA) this.direccion = d;
@@ -88,33 +131,43 @@ public class Serpiente implements Cloneable
 		if(d==Direccion.DERECHA && this.direccion!=Direccion.IZQUIERDA) this.direccion = d;
 	}
 
+	/**
+	 * Equivale a isViva()
+	 */
 	public boolean estaViva() {
 		return viva;
 	}
 
+	/**
+	 * Establece el estado de la serpiente a muerta
+	 */
 	public void matar() {
 		this.viva = false;
 	}//End of matar
 	
 	
 	
-	
-	public boolean avanzar() {
-		Casilla cabeza = posiciones.peekFirst();
-		Casilla nuevaCabeza = new Casilla(cabeza.getEjeX(),cabeza.getEjeY());
+	/**
+	 * Metodo que permite avanzar la serpiente DE FORMA EFICIENTE YA QUE USAMOS UNA LINKED LIST una casilla y en
+	 * caso de que deba crecer, le aumenta una casilla
+	 */
+	public void avanzar() {
+		Casilla cabeza = posiciones.peekFirst(); //Cogemos la cabeza
+		Casilla nuevaCabeza = new Casilla(cabeza.getEjeX(),cabeza.getEjeY()); //Clonamos los valores de la cabeza
 		
+		//le damos la siguiente posicion
 		switch (direccion) {
 			case ARRIBA: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()-1);break;
 			case ABAJO: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()+1);break;
 			case DERECHA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()+1);break;
 			case IZQUIERDA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()-1);break;
 		}//End of switch
-		posiciones.addFirst(nuevaCabeza);
+		posiciones.addFirst(nuevaCabeza);//addherimos como cabeza la nueva coordenada
 		if(this.deboCrecer)
 			this.deboCrecer=false;
 		else
-			posiciones.removeLast();
-		return true;
+			posiciones.removeLast(); //en caso de no crecer removemos la ultima
+		
 	}//End of avanzar
 	
 	

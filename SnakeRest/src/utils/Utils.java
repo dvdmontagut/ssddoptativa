@@ -1,13 +1,16 @@
 package utils;
 
-import java.util.concurrent.Semaphore;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+/**
+ * Clase con metodos usados por todas las demas clases del programa. Utils es a nosotros lo que biblioteca.jar a Coti.
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 public class Utils {
 
 	static Client client = ClientBuilder.newClient();
@@ -29,17 +32,16 @@ public class Utils {
 				"Sonido", "Despertar", "Tarde", "Noche", "Abecedario", "Alfabeto", "Alabarda", "Patada",
 				"Cetaceo", "Musica", "OWO", "UWU", "Cumulonimbo", "Elefante", "Sala", "Poker", "Manzana",
 				"Comando", "Guardia", "Caligrafia", "Laboratorio", "Mayo", "Nesa", "Flor", "Banda", "Venda",
-				"Carretera", "Bateria", "Helado", "Bicicleta", "Triangulo", "Rama", "Trinchera", "Version"
+				"Carretera", "Bateria", "Helado", "Bicicleta", "Triangulo", "Rama", "Trinchera", "Version", "Taki",
+				"Yaki", "Chicken", "Teriyaki", "Rosalia", "Jamon", "Ficha", "SHCE", "Rex", "WillyRex"
 	};
 	
 		
 	
-	/*
-	 * Usar junto a: 
-	 * if (output == null || output.contains("error")) {
-	 * 		System.out.println(output == null ? "Error" : output);
-	 * 		return false; 
-	 * }// End of if
+	/**
+	 * Hace una peticion de tipo GET.
+	 * @param link cadena de texto con el link a usar incluidos parametros
+	 * @return retorna la respuesta del servidor
 	 */
 	public static String peticion(String link) {
 
@@ -54,6 +56,13 @@ public class Utils {
 		}
 		return respuesta;
 	} // End of method
+	
+	/**
+	 * Hace una peticion de tipo GET.
+	 * @param link cadena de texto con el link a usar incluidos parametros
+	 * @return retorna la respuesta del servidor
+	 * @throws Exception
+	 */
 	public static String peticion_throws(String link) throws Exception{
 
 		java.net.URI uri = UriBuilder.fromUri(link).build();
@@ -61,20 +70,11 @@ public class Utils {
 		return target.request(MediaType.TEXT_PLAIN).get(String.class);
 	} // End of method
 	
-	public static Boolean waitSem(Semaphore s, int n) {
-		try {
-			s.acquire(n);
-		} catch (InterruptedException e) {e.printStackTrace();return false;}
-		return true;
-	}//End of accederSeccionCritica
 	
-	public static Boolean signalSem(Semaphore s, int n) {
-		try {
-			s.release(n);
-		} catch (Exception e) {e.printStackTrace();return false;}
-		return true;
-	}//End of salirSeccionCritica
-
+	/**
+	 * Hace un Thread.sleep
+	 * @param dormir tiempo se espera recibir en decimas de segundo
+	 */
 	public static void dormir(int dormir) {
 		try {
 			Thread.sleep((long)(dormir*100));
@@ -83,18 +83,24 @@ public class Utils {
 		}
 	}//End of dormir
 	
-	public static String factoryTablero(String output) {
-		if (output == null || output.contains("error")) {
-			System.out.println(output == null ? "Error" : output);
+	/**
+	 * Devuelve una cadena de texto con intros para mostrar el tablero
+	 * de forma adecuada
+	 * @param input Cadena proveniente del servidor
+	 * @return
+	 */
+	public static String factoryTablero(String input) {
+		if (input == null || input.contains("error")) {
+			System.out.println(input == null ? "Error" : input);
 			return "error";
 		}// End of if
 		
-		String[] tokens = output.split(Utils.SEPARADOR2);
+		String[] tokens = input.split(Utils.SEPARADOR2);
 		StringBuilder sb = new StringBuilder();
 		for(String s : tokens) {
 			String[] tokens2 = s.split(Utils.SEPARADOR1);
 			for(String ss: tokens2)	sb.append(ss);
-			sb.append("\n");
+				sb.append("\n");
 		}//end of for
 		return sb.toString();
 	}//end of factoryTablero

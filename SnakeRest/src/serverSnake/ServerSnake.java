@@ -9,6 +9,12 @@ import javax.ws.rs.core.MediaType;
 
 import utils.*;
 
+/**
+ * 
+ *
+ * @author David Montagut Pamo, Sergio Rollan Moralejo, Anibal Vaquero Blanco.
+ *
+ */
 @Singleton
 @Path("game")
 public class ServerSnake {
@@ -21,18 +27,22 @@ public class ServerSnake {
 		private Partida p;
 		private String salaActiva;
 		private List<String> nombres;
+		private Object seccionCritica;
 		
+		/**
+		 * Constructor del server
+		 */
 		public ServerSnake()
 		{
 			partidaEnCurso=false;
 			tablero=new Tablero();
 			nombres = new ArrayList<String>();
+			seccionCritica=new Object();
 		}
 		
 		/**
-		 * Este metodo sirve para comprobar que existe el servidor
-		 * http://localhost:8080/SnakeRest/SnakeMRV/game/estadoDelServidor
-		 * @return
+		 * Este metodo sirve para comprobar si se puede jugar una nueva partida
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/inicioDelServidor
 		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
@@ -45,8 +55,7 @@ public class ServerSnake {
 		
 		/**
 		 * Este metodo sirve para esperar mientras todos dan a inscribirse
-		 * http://localhost:8080/SnakeRest/SnakeMRV/game/estadoDelServidor
-		 * @return
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/esperarComienzo
 		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
@@ -62,8 +71,8 @@ public class ServerSnake {
 		
 		/**
 		 * Este metodo inicializa el servidor para dar paso a una nueva partida
-		 * @param nj
-		 * @return
+		 * @param nj Numero de jugadores que obligatoriamente asistiran a la partida
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/crearSala?nJugadores=3
 		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
@@ -75,9 +84,11 @@ public class ServerSnake {
 				if(nj > ((Utils.ALTO * Utils.ANCHO)/10)) return "ERROR. NUMERO DE JUGADORES DEMASIADO ALTO";
 				Random r = new Random();
 				StringBuilder sb = new StringBuilder();
+				//GENERAR IDENTIFICADOR DE LA SALA
 				sb.append(Utils.PALABRAS[r.nextInt(Utils.PALABRAS.length)]).append(r.nextInt(10)).append(r.nextInt(10)).append(r.nextInt(10));
 				this.salaActiva = sb.toString();
 				this.numeroJugadores = nj;
+				//DECLARAMOS LA BARRERA PARA QUE TODOS LOS JUGADORES SE ESPEREN
 				this.barreraEmpezarPartida=new CyclicBarrier(numeroJugadores);
 				this.numeroInscritos=0;
 				nombres = new ArrayList<String>();
@@ -87,6 +98,12 @@ public class ServerSnake {
 			return "ERROR. AHORA ESTAN EN PARTIDA BRO.";
 		}
 
+		/**
+		 * Metodo que sirve para inscribirse a una partida
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/inscribirse?sala=Yaki054&nombre=T
+		 * @param sala nombre de la sala
+		 * @param nombre letra con la que se definira tu serpiente
+		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("inscribirse")
@@ -97,14 +114,20 @@ public class ServerSnake {
 			for(String s: nombres)
 				if(s.equals(nombre))
 					return "ERROR. SORRY, YA HAY ALGUIEN INSCRITO CON ESE NOMBRE";
-			numeroInscritos++;
-			tablero = null;
-			nombres.add(nombre.toLowerCase());
-			tablero = new Tablero();
-			tablero.construir(numeroInscritos, nombres);
+			synchronized(seccionCritica) 
+			{
+				numeroInscritos++;
+				nombres.add(nombre.toLowerCase());
+			}
 			return "Inscripcion realizada con exito";
 		}
 
+		/**
+		 * Metodo que sirve para indicar un cambio de direccion de tu serpiente
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/cambioDireccion?nombre=T&direccion=ABAJO
+		 * @param nombre
+		 * @param d
+		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("cambioDireccion")
@@ -123,6 +146,11 @@ public class ServerSnake {
 					{tablero.cambiarDireccion(nombre, direccion); break;}
 		}
 
+		/**
+		 * Metodo para abandonar una partida
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/abandonar?nombre=T
+		 * @param nombre
+		 */
 		@GET 
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("abandonar")
@@ -136,9 +164,9 @@ public class ServerSnake {
 
 		
 		/**
-		 * Este método muestra el tablero
+		 * Este metodo muestra el tablero
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/verTablero
 		 * @param sala
-		 * @return
 		 */
 		@GET
 		@Produces(MediaType.TEXT_PLAIN) 
@@ -149,24 +177,29 @@ public class ServerSnake {
 
 		
 		/**
-		 * Este método muestra el tablero
+		 * Este meotodo comienza una partida y te devuelve el codigo de la sala
+		 * http://localhost:8080/SnakeRest/SnakeMRV/game/comenzarPartida
 		 * @param sala
-		 * @return
 		 */
 		@GET
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("comenzarPartida")
 		public void comenzarPartida() {
-			if(!this.partidaEnCurso) 
+			synchronized(seccionCritica) 
 			{
-				 this.partidaEnCurso = true;
-				 p = new Partida(this);
-				 p.start();
+				if(!this.partidaEnCurso) 
+				{
+					 this.partidaEnCurso = true;
+					 this.tablero.construir(numeroJugadores, nombres); //GENERAMOS EL TABLERO CON TODOS LOS JUGADORES
+					 p = new Partida(this);
+					 p.start();
+				}
 			}
+			
 		}//end of comenzarPartida
 		
 		/**
-		 * 
+		 * Este metodo es el bucle donde se juega la partida
 		 */
 		boolean partida() {
 			
@@ -174,7 +207,7 @@ public class ServerSnake {
 			{
 				Utils.dormir(Utils.TIEMPO_ENTRE_TURNOS);
 				tablero.turno();
-				System.out.println(Utils.factoryTablero(tablero.toString()));
+				System.out.println(Utils.factoryTablero(tablero.toString())); //CAMBIAR A EL LOG
 				System.out.flush();
 			}
 			this.partidaEnCurso = false;
