@@ -134,6 +134,7 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 		
 		String ipNueva = (String)JOptionPane.showInputDialog(this,"IP del servidor: ",
 				"", JOptionPane.PLAIN_MESSAGE, null, null, "localhost");
+		if(ipNueva==null) return;
 		String link = "http://"+ipNueva+":8080/SnakeRest/SnakeMRV/game/inicioDelServidor";
 		String respuesta="";
 		try {
@@ -164,8 +165,9 @@ public class PantallaPrincipal extends JFrame implements ActionListener
 				"",
 				JOptionPane.INFORMATION_MESSAGE);
 			
-		String nJugs = (String)JOptionPane.showInputDialog(this,"Número de jugadores: ",
+		String nJugs = (String)JOptionPane.showInputDialog(this,"Nï¿½mero de jugadores: ",
 				"", JOptionPane.PLAIN_MESSAGE, null, null, "");
+		if(nJugs==null) return;
 		int nj = 0;
 		try
 		{

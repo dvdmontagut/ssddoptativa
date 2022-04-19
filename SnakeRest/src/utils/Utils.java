@@ -22,8 +22,8 @@ public class Utils {
 	public static final String CASILLA_VACIA="-";
 	public static final String CASILLA_COMIDA="*";
 	public static final int NO_VALIDO = -54;
-	public static final int TIEMPO_ENTRE_TURNOS = 20;
-	public static final int TIMEOUT = 4; 
+	public static final int TIEMPO_ENTRE_TURNOS = 10; //decimas de segundo
+	public static final int TIMEOUT = 4;  //segundos
 	
 	public static final String[] PALABRAS = {
 				"Snake", "Serpiente", "Coti", "Usal", "Minimiconicas", "Montadito", "Nano", "Circo", "Reloj",

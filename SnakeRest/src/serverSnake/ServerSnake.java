@@ -150,7 +150,6 @@ public class ServerSnake {
 				case "DERECHA": direccion=Direccion.DERECHA; break;
 			}
 			tablero.cambiarDireccion(nombre, direccion);
-			System.out.println("CAMBIA LA " + nombre );
 		}
 
 		/**
@@ -188,7 +187,6 @@ public class ServerSnake {
 				e.printStackTrace();
 			}
 			this.jugadoresActivos.add(nombre);
-			System.out.println("pene");
 			return tablero.toString();
 		}//end of verTablero
 
@@ -228,18 +226,16 @@ public class ServerSnake {
 				System.out.println(Utils.factoryTablero(tablero.toString())); //CAMBIAR A EL LOG
 				System.out.flush();
 				try {
-					if(!this.comprobarJugadores.tryAcquire(numeroActivos,Utils.TIMEOUT, TimeUnit.SECONDS)) {
-						System.out.println("AVANZO POR INCOMPADECENCIA " + turno);
+					if(!this.comprobarJugadores.tryAcquire(numeroActivos,Utils.TIMEOUT, TimeUnit.SECONDS))
+					{
 						numeroActivos = this.comprobarJugadores.availablePermits();
 						this.comprobarJugadores.acquire(numeroActivos);
 						this.nombres = new ArrayList<>();
 						for(String s : this.jugadoresActivos)
 							nombres.add(s);
-					}else {
-
-						System.out.println("AVANZO BIEN "+ turno);
+					}else 
 						this.comprobarJugadores.release(numeroActivos);
-					}
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
