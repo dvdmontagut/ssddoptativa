@@ -24,6 +24,7 @@ public class PantallaJuego extends JDialog implements ActionListener
 	private JPanel jpAbajo, jpDirecs, jpTA;
 	private String nombre, ip;
 	private Timer t;
+	private int turno = 0;
 	
 	/**
 	 * Constructor de la pantalla de juego
@@ -89,7 +90,7 @@ public class PantallaJuego extends JDialog implements ActionListener
 					JOptionPane.ERROR_MESSAGE);
 			this.dispose();
 		}
-		t=new Timer(1000,this);
+		t=new Timer(Utils.TIEMPO_ENTRE_TURNOS*100,this);
 		t.start();
 	}
 	
@@ -114,7 +115,7 @@ public class PantallaJuego extends JDialog implements ActionListener
 	 */
 	private void pintarTablero()
 	{
-		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/verTablero";
+		String link = "http://"+ip+":8080/SnakeRest/SnakeMRV/game/verTablero?nombre="+this.nombre;
 		String respuesta="";
 		try {
 			respuesta=Utils.peticion_throws(link);
@@ -123,8 +124,8 @@ public class PantallaJuego extends JDialog implements ActionListener
 			this.dispose();
 		}
 		juegoTA.setText(Utils.factoryTablero(respuesta));
-		t=new Timer(Utils.TIEMPO_ENTRE_TURNOS,this);
-		t.start();
+		
+		this.setTitle(""+turno++);
 	}
 
 	/** 

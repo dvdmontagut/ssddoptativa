@@ -174,6 +174,7 @@ public class Tablero
 	public void turno() {
 		
 		boolean flagGenerarComida = false;
+		System.out.println("EJECUTO TURNO");
 		//COPIAR LAS SERPIENTES REALES
 		this.serpientesFicticias = new ArrayList<>();
 		for(Serpiente s : this.serpientes) 
@@ -210,6 +211,7 @@ public class Tablero
 		
 		//DIBUJO
 		this.dibujar();	
+		System.out.println("FIN TURNO");
 		
 	}//End of turno
 

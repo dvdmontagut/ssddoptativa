@@ -1,7 +1,10 @@
 package serverSnake;
 
 import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;
@@ -28,6 +31,9 @@ public class ServerSnake {
 		private String salaActiva;
 		private List<String> nombres;
 		private Object seccionCritica;
+		private Semaphore comprobarJugadores;
+		private Set<String> jugadoresActivos;
+		
 		
 		/**
 		 * Constructor del server
@@ -38,6 +44,7 @@ public class ServerSnake {
 			tablero=new Tablero();
 			nombres = new ArrayList<String>();
 			seccionCritica=new Object();
+			jugadoresActivos = new HashSet<>();
 		}
 		
 		/**
@@ -93,6 +100,7 @@ public class ServerSnake {
 				this.numeroInscritos=0;
 				nombres = new ArrayList<String>();
 				tablero=new Tablero();
+				this.comprobarJugadores = new Semaphore(0);
 				return this.salaActiva;
 			}
 			return "ERROR. AHORA ESTAN EN PARTIDA BRO.";
@@ -141,9 +149,8 @@ public class ServerSnake {
 				case "IZQUIERDA": direccion=Direccion.IZQUIERDA; break;
 				case "DERECHA": direccion=Direccion.DERECHA; break;
 			}
-			for(String s: nombres)
-				if(s.equals(nombre))
-					{tablero.cambiarDireccion(nombre, direccion); break;}
+			tablero.cambiarDireccion(nombre, direccion);
+			System.out.println("CAMBIA LA " + nombre );
 		}
 
 		/**
@@ -171,7 +178,17 @@ public class ServerSnake {
 		@GET
 		@Produces(MediaType.TEXT_PLAIN) 
 		@Path("verTablero")
-		public String verTablero() {
+		public String verTablero(@QueryParam(value = "nombre") String nombre) {
+			if(!this.nombres.contains(nombre)) 
+				return "Error, se te ha dado de baja";
+			this.comprobarJugadores.release();
+			try {
+				this.comprobarJugadores.acquire();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			this.jugadoresActivos.add(nombre);
+			System.out.println("pene");
 			return tablero.toString();
 		}//end of verTablero
 
@@ -202,13 +219,33 @@ public class ServerSnake {
 		 * Este metodo es el bucle donde se juega la partida
 		 */
 		boolean partida() {
-			
+			int numeroActivos = this.numeroJugadores;
+			int turno = 0;
 			while(!tablero.partidaAcabada()) 
 			{
-				Utils.dormir(Utils.TIEMPO_ENTRE_TURNOS);
 				tablero.turno();
+				turno ++;
 				System.out.println(Utils.factoryTablero(tablero.toString())); //CAMBIAR A EL LOG
 				System.out.flush();
+				try {
+					if(!this.comprobarJugadores.tryAcquire(numeroActivos,Utils.TIMEOUT, TimeUnit.SECONDS)) {
+						System.out.println("AVANZO POR INCOMPADECENCIA " + turno);
+						numeroActivos = this.comprobarJugadores.availablePermits();
+						this.comprobarJugadores.acquire(numeroActivos);
+						this.nombres = new ArrayList<>();
+						for(String s : this.jugadoresActivos)
+							nombres.add(s);
+					}else {
+
+						System.out.println("AVANZO BIEN "+ turno);
+						this.comprobarJugadores.release(numeroActivos);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Utils.dormir(Utils.TIEMPO_ENTRE_TURNOS);
+				
 			}
 			this.partidaEnCurso = false;
 			return true;
