@@ -1,5 +1,11 @@
 package utils;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -105,7 +111,49 @@ public class Utils {
 		}//end of for
 		return sb.toString();
 	}//end of factoryTablero
-
 	
+	public static void crearLog(String sala) {
+		String ruta = Paths.get(System.getProperty("user.home"),sala+".log").toString();
+		File f = new File(ruta);
+		if(f.exists()) f.delete();
+		try {
+			f.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	//REFERENCIA DE https://es.stackoverflow.com/questions/68526/agregar-contenido-a-un-archivo-sin-sobrescribir-el-contenido
+	public static void escribirLog(String sala, String data){
+		String ruta = Paths.get(System.getProperty("user.home"),sala+".log").toString();
+		File f = new File(ruta);
+		
+		
+		BufferedWriter bw = null;
+	    FileWriter fw = null;
+	    try {
+	        // Si el archivo no existe, se crea!
+	        if (!f.exists()) {
+	            f.createNewFile();
+	        }
+	        // flag true, indica adjuntar información al archivo.
+	        fw = new FileWriter(f, true);
+	        bw = new BufferedWriter(fw);
+	        bw.write(data);
+	        bw.write("\n");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+        try {
+                        //Cierra instancias de FileWriter y BufferedWriter
+            if (bw != null)
+                bw.close();
+            if (fw != null)
+                fw.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
 	
 }//End of class

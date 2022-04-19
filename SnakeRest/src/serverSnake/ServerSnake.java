@@ -94,6 +94,7 @@ public class ServerSnake {
 				//GENERAR IDENTIFICADOR DE LA SALA
 				sb.append(Utils.PALABRAS[r.nextInt(Utils.PALABRAS.length)]).append(r.nextInt(10)).append(r.nextInt(10)).append(r.nextInt(10));
 				this.salaActiva = sb.toString();
+				Utils.crearLog(salaActiva);
 				this.numeroJugadores = nj;
 				//DECLARAMOS LA BARRERA PARA QUE TODOS LOS JUGADORES SE ESPEREN
 				this.barreraEmpezarPartida=new CyclicBarrier(numeroJugadores);
@@ -150,6 +151,7 @@ public class ServerSnake {
 				case "DERECHA": direccion=Direccion.DERECHA; break;
 			}
 			tablero.cambiarDireccion(nombre, direccion);
+			Utils.escribirLog(salaActiva, nombre + " gira hacia "+d);
 		}
 
 		/**
@@ -162,9 +164,8 @@ public class ServerSnake {
 		@Path("abandonar")
 		public void abandonar(@QueryParam(value = "nombre") String nombre) 
 		{
-			for(String s: nombres)
-				if(s.equals(nombre))
-					{tablero.matar(nombre); break;}
+			tablero.matar(nombre);
+			Utils.escribirLog(salaActiva, nombre + " abandona la partida");
 		}
 
 
@@ -179,7 +180,7 @@ public class ServerSnake {
 		@Path("verTablero")
 		public String verTablero(@QueryParam(value = "nombre") String nombre) {
 			if(!this.nombres.contains(nombre)) 
-				return "Error, se te ha dado de baja";
+				return "Error, no estás en los jugadores activos";
 			this.comprobarJugadores.release();
 			try {
 				this.comprobarJugadores.acquire();
@@ -205,6 +206,7 @@ public class ServerSnake {
 				if(!this.partidaEnCurso) 
 				{
 					 this.partidaEnCurso = true;
+					 Utils.escribirLog(salaActiva, "Comienza la partida");
 					 this.tablero.construir(numeroJugadores, nombres); //GENERAMOS EL TABLERO CON TODOS LOS JUGADORES
 					 p = new Partida(this);
 					 p.start();
@@ -218,13 +220,12 @@ public class ServerSnake {
 		 */
 		boolean partida() {
 			int numeroActivos = this.numeroJugadores;
-			int turno = 0;
+			int turno=0;
 			while(!tablero.partidaAcabada()) 
 			{
+				Utils.escribirLog(salaActiva, turno+++"º turno");
 				tablero.turno();
-				turno ++;
-				System.out.println(Utils.factoryTablero(tablero.toString())); //CAMBIAR A EL LOG
-				System.out.flush();
+				Utils.escribirLog(salaActiva, Utils.factoryTablero(tablero.toString())+"\n");
 				try {
 					if(!this.comprobarJugadores.tryAcquire(numeroActivos,Utils.TIMEOUT, TimeUnit.SECONDS))
 					{
