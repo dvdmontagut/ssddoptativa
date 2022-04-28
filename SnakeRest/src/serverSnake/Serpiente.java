@@ -16,11 +16,12 @@ public class Serpiente
 	/**
 	 * Usamos una LinkedList a modo de cola porque es la estructura de datos
 	 * que mejor se asemeja al funcionamiento del Snake ya que nos permite
-	 * añadir por el principio y eliminar por el final para asi recrear el movimiento
+	 * aï¿½adir por el principio y eliminar por el final para asi recrear el movimiento
 	 * de la serpiente.
 	 */
 	private LinkedList<Casilla> posiciones;
 	private Direccion direccion;
+	private Direccion ultimaDireccion;
 	private boolean deboCrecer;
 	private boolean viva;
 	
@@ -37,6 +38,7 @@ public class Serpiente
 		this.nombre = nombre;
 		this.posiciones = posiciones;
 		this.direccion = direccion;
+		this.ultimaDireccion=direccion;
 		this.deboCrecer = deboCrecer;
 		this.viva = viva;
 	}//End of builder
@@ -113,7 +115,7 @@ public class Serpiente
 	
 	
 	/**
-	 * Metodo para indicar que la serpiente ha crecido y en el siguiente turno logico debe aumentar su tamaño
+	 * Metodo para indicar que la serpiente ha crecido y en el siguiente turno logico debe aumentar su tamaï¿½o
 	 */
 	public void comer() {
 		this.deboCrecer=true;
@@ -125,10 +127,10 @@ public class Serpiente
 	 */
 	public void setDireccion(Direccion d) 
 	{
-		if(d==Direccion.ABAJO && this.direccion!=Direccion.ARRIBA) this.direccion = d;
-		if(d==Direccion.ARRIBA && this.direccion!=Direccion.ABAJO) this.direccion = d;
-		if(d==Direccion.IZQUIERDA && this.direccion!=Direccion.DERECHA) this.direccion = d;
-		if(d==Direccion.DERECHA && this.direccion!=Direccion.IZQUIERDA) this.direccion = d;
+		if(d==Direccion.ABAJO && this.ultimaDireccion!=Direccion.ARRIBA) this.direccion = d;
+		if(d==Direccion.ARRIBA && this.ultimaDireccion!=Direccion.ABAJO) this.direccion = d;
+		if(d==Direccion.IZQUIERDA && this.ultimaDireccion!=Direccion.DERECHA) this.direccion = d;
+		if(d==Direccion.DERECHA && this.ultimaDireccion!=Direccion.IZQUIERDA) this.direccion = d;
 	}
 
 	/**
@@ -157,10 +159,22 @@ public class Serpiente
 		
 		//le damos la siguiente posicion
 		switch (direccion) {
-			case ARRIBA: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()-1);break;
-			case ABAJO: nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()+1);break;
-			case DERECHA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()+1);break;
-			case IZQUIERDA: nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()-1);break;
+			case ARRIBA: 
+				nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()-1); 
+				this.ultimaDireccion=Direccion.ARRIBA; 
+				break;
+			case ABAJO: 
+				nuevaCabeza.setEjeY(nuevaCabeza.getEjeY()+1); 
+				this.ultimaDireccion=Direccion.ABAJO; 
+				break;
+			case DERECHA: 
+				nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()+1); 
+				this.ultimaDireccion=Direccion.DERECHA; 
+				break;
+			case IZQUIERDA: 
+				nuevaCabeza.setEjeX(nuevaCabeza.getEjeX()-1); 
+				this.ultimaDireccion=Direccion.IZQUIERDA; 
+				break;
 		}//End of switch
 		posiciones.addFirst(nuevaCabeza);//addherimos como cabeza la nueva coordenada
 		if(this.deboCrecer)
